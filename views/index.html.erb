@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title><%= config[:title] || 'ERM' %></title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="/favicon.ico" type="image/png">
+
+  <link rel="stylesheet" href="/vendor/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/vendor/codemirror-5.28.0/codemirror.css">
+  <link rel="stylesheet" href="/vendor/codemirror-5.28.0/theme/neo.css">
+  <link rel="stylesheet" href="/vendor/simplemde-1.11.2/simplemde.min.css">
+  <link rel="stylesheet" href="/vendor/quilljs-1.3.6/quill.snow.css">
+  <link rel="stylesheet" href="/vendor/text-security-0.0.0/dist/text-security.css">
+
+  <link rel="stylesheet" href="/vendor/bootstrap-4.1.0-dist/css/bootstrap.min.css">
+
+  <script src="/vendor/codemirror-5.28.0/codemirror.min.js"></script>
+  <script src="/vendor/codemirror-5.28.0/addons/display/placeholder.js"></script>
+  <script src="/vendor/codemirror-5.28.0/mode/shell/shell.js"></script>
+  <script src="/vendor/codemirror-5.28.0/mode/javascript/javascript.js"></script>
+  <script src="/vendor/codemirror-5.28.0/mode/ruby/ruby.js"></script>
+  <script src="/vendor/codemirror-5.28.0/mode/python/python.js"></script>
+  <script src="/vendor/codemirror-5.28.0/mode/xml/xml.js"></script>
+  <script src="/vendor/codemirror-5.28.0/mode/yaml/yaml.js"></script>
+  <script src="/vendor/codemirror-5.28.0/mode/markdown/markdown.js"></script>
+  <script src="/vendor/marked-0.3.6.min.js"></script>
+
+  <script src="/vendor/jquery-3.3.1.slim.min.js"></script>
+  <script src="/vendor/popperjs-1.14.0/popper.min.js"></script>
+  <script src="/vendor/bootstrap-4.1.0-dist/js/bootstrap.min.js"></script>
+  <script src="/vendor/html5-sortable-0.9.11.js"></script>
+  <script src="/vendor/timeago-3.0.0/timeago.min.js"></script>
+
+  <script type="application/javascript" src="/vendor/axf-0.0.1/axf/axf.js" ></script>
+  <script type="application/javascript" src="/vendor/axf-0.0.1/plugins/plugins.js" ></script>
+  <script
+    type="application/javascript"
+    src="/<%=
+      Sinatra::Base.development? ?
+      "assets/client.js" : "/client.min.js"
+    %>"
+    ></script>
+
+</head>
+<body>
+
+<script>let config = JSON.parse(`<%=
+  {
+    logo: config[:logo],
+    title: config[:title],
+    css: config[:css]
+  }.to_json
+%>`)</script>
+<script>ax( app )</script>
+<!-- <script>ax( (a,x) => a.pre( x.appkit.put( config ) ) )</script> -->
+
+</body>
+</html>

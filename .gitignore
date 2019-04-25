@@ -1,0 +1,8 @@
+# Ignore Byebug command history file.
+.byebug_history
+
+/scrap
+/volumes
+
+/public/client.js
+/public/client.min.js

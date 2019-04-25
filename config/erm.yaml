@@ -1,0 +1,277 @@
+---
+logo:
+  height: 35
+  width: 100
+title: Equator Resources
+home:
+  label: "Cool"
+  description: "wow"
+css:
+  body:
+    backgroundColor: white
+    color: "dimgrey"
+mount:
+  - name: Clients
+    order: true
+    files:
+      key: Note
+      serialize: yaml
+      as: list
+      metadata:
+        show:
+          as: list
+        form:
+          - field:
+              key: with
+          - field:
+              key: date
+              type: date
+          - field:
+              key: body
+              as: textarea
+      content: |
+        with: {{{ metadata.with }}}
+        date: {{{ metadata.date }}}
+        body: {{{ metadata.body }}}
+    dirs:
+      key: Client
+      description: "RM: {{{ metadata.account_manager }}}"
+      # label: Client
+      metadata:
+        form:
+          - field:
+              key: account_manager
+              as: select
+              collection:
+                - Lachlan
+                - Doug
+      dirs:
+        - name: User
+        - name: Projects
+          order: true
+          dirs:
+            key: Project
+            dirs:
+              - name: Data
+                dirs:
+                  key: Notebook
+                  new: false
+                  delete: false
+                  edit: false
+                  files:
+                    key: Output
+                    new: false
+                    delete: false
+                    edit: false
+                    raw: false
+                    editor: false
+                    as: link
+                    link:
+                      label: Open in Jupyter
+                      href: https://ipjn3.eq8r.com/notebooks/{{ path }}
+              - name: Controllers
+                order: true
+                files:
+                  key: Controller
+                  ext: ipynb
+                  raw: false
+                  editor: false
+                  as: link
+                  link:
+                    label: Open in Jupyter
+                    href: https://ipjn3.eq8r.com/notebooks/{{ path }}
+                  seed: |
+                    {
+                      "cells": [
+                        {
+                          "cell_type": "code",
+                          "execution_count": null,
+                          "metadata": {},
+                          "outputs": [],
+                          "source": []
+                        }
+                      ],
+                      "metadata": {
+                        "kernelspec": {
+                          "display_name": "Python 3",
+                          "language": "python",
+                          "name": "python3"
+                        },
+                        "language_info": {
+                          "codemirror_mode": {
+                            "name": "ipython",
+                            "version": 3
+                          },
+                          "file_extension": ".py",
+                          "mimetype": "text/x-python",
+                          "name": "python",
+                          "nbconvert_exporter": "python",
+                          "pygments_lexer": "ipython3",
+                          "version": "3.7.1"
+                        }
+                      },
+                      "nbformat": 4,
+                      "nbformat_minor": 2
+                    }
+                dirs:
+                  - name: Processes
+                    order: true
+                    files:
+                      key: Process
+                      raw: false
+                      editor: false
+                      ext: ipynb
+                      as: link
+                      link:
+                        label: Open in Jupyter
+                        href: https://ipjn3.eq8r.com/notebooks/{{ path }}
+                      seed: |
+                        {
+                          "cells": [
+                            {
+                              "cell_type": "code",
+                              "execution_count": null,
+                              "metadata": {},
+                              "outputs": [],
+                              "source": []
+                            }
+                          ],
+                          "metadata": {
+                            "kernelspec": {
+                              "display_name": "Python 3",
+                              "language": "python",
+                              "name": "python3"
+                            },
+                            "language_info": {
+                              "codemirror_mode": {
+                                "name": "ipython",
+                                "version": 3
+                              },
+                              "file_extension": ".py",
+                              "mimetype": "text/x-python",
+                              "name": "python",
+                              "nbconvert_exporter": "python",
+                              "pygments_lexer": "ipython3",
+                              "version": "3.7.1"
+                            }
+                          },
+                          "nbformat": 4,
+                          "nbformat_minor": 2
+                        }
+
+xmount:
+  - name: Clients
+    # label: Our beloved clients
+    description: We love you guys!!!!
+    order: true
+    dirs:
+      key: client
+      # label: Client
+      # index: true
+      # name: Client {{{ index }}}
+      description: "{{{ created }}}"
+      # order: true
+      metadata:
+        show:
+          as: list
+        form:
+          - field:
+              key: account_manager
+    files:
+      key: task
+      # index: true
+      description: "{{{ created }}}"
+      # name: Task {{{ index }}} - {{{ responsibility }}}
+      ext: md
+      metadata:
+        show:
+          as: list
+        form:
+          - field:
+              key: responsibility
+
+
+xmount:
+  - key: Clients
+    order: true
+    description: Work in progress
+    dirs:
+      key: Client
+      files:
+        - key: Client overview
+          as: md
+        - key: Client style guide
+          as: md
+        - key: Contract
+          as: md
+      dirs:
+        - key: Contacts
+          dirs:
+            key: Contact
+            description: CRM ID {{ crm_id }}
+            metadata:
+              show:
+                as: list
+                list: [ modified, created, type ]
+              form:
+                - field:
+                    key: CRM ID
+                    # label: CRM ID
+                    input:
+                      required: true
+                - field:
+                    key: Full name
+                    input:
+                      required: true
+                - field:
+                    key: type
+                    as: select
+                    collection: [ Friend, Colleague, Acquaintance, Unknown ]
+            name: {{ full_name }}
+            files:
+              - key: Contact info
+                serialize: yaml
+                form:
+                  - field:
+                      key: Name
+              - key: Notes
+                ext: md
+        - key: Projects
+          files:
+            key: Action item
+            as: md
+          dirs:
+            - key: Project
+              dirs:
+                - key: Specs
+                  files:
+                    key: Spec
+                - key: Code
+                  files:
+                    - key: Server code
+                      ext: rb
+                    - key: Client code
+                      ext: js
+                    - key: Process code
+                      ext: ipynb
+                      as: link
+                      link:
+                        label: Open in Jupyter
+                        href: https://ipynb.example.com/notebooks/{{ path }}
+              files:
+                key: Task
+                index: true
+                name: Task {{ index }}
+                description: {{ description }}
+                ext: yaml
+                metadata:
+                  show:
+                    as: list
+                  form:
+                    - field:
+                        key: Description
+                    - field:
+                        key: Responsibility
+
+mode_map:
+  ipynb: javascript

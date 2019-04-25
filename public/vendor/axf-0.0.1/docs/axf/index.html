@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><hr>
+<p>ax() - The Ax Function</p>
+<p>====</p>
+<p> is a javaScript library for creating dynamic web content.</p>
+<p>Ax is invoked by calling its nominal function:</p>
+<pre class="prettyprint source lang-javascript"><code>ax( component, attributes )</code></pre><p><code>component</code> can be:</p>
+<ul>
+<li><strong>object</strong> - renders as an html element.</li>
+<li><strong>function</strong> - returns a component.</li>
+<li><strong>class</strong> - <code>new</code> returns a component.</li>
+<li><strong>element</strong>, <strong>node</strong> - used as is.</li>
+<li><strong>array</strong> - collection of components.</li>
+<li><strong>string</strong>, <strong>anything else</strong> - rendered as text.</li>
+</ul>
+<p><code>attributes</code> are optional. Attributes are applied to the rendered element.</p>
+<h2>object components</h2><p>An <em>object component</em> is parsed by ax() to
+create an HTML element, which is inserted in the DOM.</p>
+<p>The element is furnished with attributes, state and methods,
+which are derived from the properties of the object.</p>
+<p>Object properties ( all are optional ):</p>
+<ul>
+<li><code>$tag</code> {string} <em>nodename</em> for the element.</li>
+<li><code>$state</code> {(object|literal)} data used for rendering content</li>
+<li><code>$text</code> {(string|function)} plain text content for the element.</li>
+<li><code>$html</code> {(string|function)} html content for the element.</li>
+<li><code>$nodes</code> {(array|function)} collection of components for the element.</li>
+<li><code>$init</code> {function} called once the element is rendered</li>
+<li><code>$update</code> {function} called when $state changes</li>
+<li><code>$on</code> {object} event handlers for the element</li>
+<li>Any other property {user defined} define whatever else you like,
+although <code>$render</code> and <code>$off</code> should not be used.</li>
+</ul>
+<p>The object properties are copied to its corresponding element.
+This is so that you can define property <code>class: 'btn'</code> on an
+object and its element will also have a <code>class</code> of <code>'btn'</code>.</p>
+<p>A new element is given a <code>$render</code> method property.
+When called, the element is populated with its content.
+This happens when the element is created and again after
+the $update method is called.</p>
+<p><code>$text</code>, <code>$html</code> and <code>$nodes</code> are the content properties,
+which describe the content ( i.e. children ) to be rendered
+on the element.
+You can't define more than one of these,
+although you can change from one type to another dynamically</p>
+<p>Content properties may be functions that return content.
+The functions are called when new content is needed.</p>
+<p>The <code>$update</code> function is called when the <code>$state</code> property changes.
+Use <code>$update</code> to manage data bindings and trigger state-dependent
+behaviour. If <code>$update</code> is not specified, the content will
+be refreshed by reapplying the relevant object content property.
+If <code>$update</code> is specified, the content will be automatically
+refreshed only if <code>$update()</code> returns <code>true</code>.</p>
+<p>The object properties <code>$text</code>, <code>$html</code>, <code>$nodes</code> and <code>$state</code> are
+not applied directly to the element. Instead, the element has
+these properties defined with custom accessors ( i.e. get/set )
+that do the job of triggering the element $render method.
+This is so that you can write statements like either:</p>
+<pre class="prettyprint source lang-javascript"><code>this.$state = { name: 'Fred', age: 30 }
+this.$text = &quot;New text&quot;</code></pre><p>and the element will render the new content.</p>
+<p>Elements also have custom accessors for <code>$on</code>, which allows
+you to write <code>this.$on( { click: alert(&quot;foo&quot;) } )</code> to set an
+event listener.</p>
+<p>ax() is global and has properties:</p>
+<ul>
+<li>'factory' - makes HTML elements</li>
+<li>'tags' - interprets ax() tags like a.h1(&quot;Hi&quot;)</li>
+<li>'extension' - for adding features to ax()</li>
+<li>'a' - exposes <code>tags</code></li>
+<li>'x' - exposes <code>extension</code></li>
+</ul></article>
+    </section>
+
+
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="ax.html">ax</a></li><li><a href="ax.extension.html">extension</a></li><li><a href="ax.factory.html">factory</a></li><li><a href="ax.log.html">log</a></li><li><a href="ax.tag.html">tag</a></li><li><a href="ax.tag.proxy.html">proxy</a></li><li><a href="ax.throw.html">throw</a></li><li><a href="ax.type.html">type</a></li><li><a href="ax.type.is.html">is</a></li><li><a href="ax.warn.html">warn</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Apr 18 2019 16:43:28 GMT+1000 (AEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
