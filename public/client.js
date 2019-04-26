@@ -22,9 +22,9 @@ let app = function(a,x) { return [
 app.navbar = (r) => (a,x) => [
   a.h5( [
     a.img( {
-      src: `/${ config.logo.src || 'logo.png' }`,
-      height: config.logo.height,
-      width: config.logo.width,
+      src: `/${ ( config.logo || {} ).src || 'logo.png' }`,
+      height: ( config.logo || {} ).height || '',
+      width: ( config.logo || {} ).width || '',
     } ),
     config.title || 'ERM'
   ] ),
@@ -110,7 +110,7 @@ app.css = (a,x) => x.appkit.document.css( [
       maxHeight: "unset",
     },
   },
-  config.css
+  config.css || {}
 ] )
 
 app.btn = function( component, onclick, klass='link', options={} ) {
