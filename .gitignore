@@ -4,5 +4,4 @@
 /scrap
 /volumes
 
-/public/client.js
-/public/client.min.js
+/config/erm.yaml
