@@ -62,5 +62,5 @@ app.css = (a,x) => x.appkit.document.css( [
       maxHeight: "unset",
     },
   },
-  config.css
+  config.css || {}
 ] )

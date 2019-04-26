@@ -1,9 +1,9 @@
 app.navbar = (r) => (a,x) => [
   a.h5( [
     a.img( {
-      src: `/${ config.logo.src || 'logo.png' }`,
-      height: config.logo.height,
-      width: config.logo.width,
+      src: `/${ ( config.logo || {} ).src || 'logo.png' }`,
+      height: ( config.logo || {} ).height || '',
+      width: ( config.logo || {} ).width || '',
     } ),
     config.title || 'ERM'
   ] ),

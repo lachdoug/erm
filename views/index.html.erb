@@ -40,13 +40,13 @@
     type="application/javascript"
     src="/<%=
       Sinatra::Base.development? ?
-      "assets/client.js" : "/client.min.js"
+      "assets/client.js" : "client.min.js"
     %>"
     ></script>
 
 </head>
 <body>
-
+<%= Sinatra::Base.development? %>
 <script>let config = JSON.parse(`<%=
   {
     logo: config[:logo],
