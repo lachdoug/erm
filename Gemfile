@@ -5,7 +5,9 @@ gem 'sinatra-contrib'
 gem 'thin'
 gem 'rake'
 # gem 'rest-client'
-gem 'byebug'
+group :development do
+  gem 'byebug'
+end
 
 gem 'uglifier'
 gem "mustache"
