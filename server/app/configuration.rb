@@ -27,7 +27,7 @@ class Server
           show_mounts config[:mount] || []
         end
 
-        configure_mounts config[:mount]
+        configure_mounts( config[:mount] || [] )
 
       end
 

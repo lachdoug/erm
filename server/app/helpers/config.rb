@@ -3,7 +3,7 @@ class Server
     module Helpers
 
       def config
-        $erm_config ||= symbolize_keys load_yaml( "config/erm.yaml" )
+        $erm_config ||= ( symbolize_keys load_yaml( "config/erm.yaml" ) ) || {}
       end
 
       end
