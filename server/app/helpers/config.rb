@@ -4,6 +4,8 @@ class Server
 
       def config
         $erm_config ||= ( symbolize_keys load_yaml( "config/erm.yaml" ) ) || {}
+      rescue Errno::ENOENT
+        {}
       end
 
       end
