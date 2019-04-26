@@ -3,9 +3,9 @@ logo:
   height: 35
   width: 100
 title: Equator Resources
-home:
-  label: "Cool"
-  description: "wow"
+# home:
+#   label: "Cool"
+#   description: "wow"
 css:
   body:
     backgroundColor: white

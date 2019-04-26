@@ -25,11 +25,13 @@ class Server
           }
         end
 
+        home_config = config[:home] || {}
+
         {
           name: '',
           key: '',
-          label: config[:home][:label],
-          description: config[:home][:description],
+          label: home_config[:label],
+          description: home_config[:description],
           type: :show_dir,
           collection: false,
           collect: { dirs: false, files: false },

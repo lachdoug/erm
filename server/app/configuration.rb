@@ -24,7 +24,7 @@ class Server
         end
 
         get [ "/api/?", "/api/~dir/?" ] do
-          show_mounts config[:mount]
+          show_mounts config[:mount] || []
         end
 
         configure_mounts config[:mount]

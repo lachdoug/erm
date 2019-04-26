@@ -1,5 +1,7 @@
 class Server < Sinatra::Base
 
+  puts "Development? #{ Sinatra::Base.development? }"
+
   require './server/app'
 
   helpers App::Helpers
