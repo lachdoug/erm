@@ -47,7 +47,7 @@
 </head>
 <body>
 
-<%= Sinatra::Base.development? %>
+<%= settings.fs_dir %>
 
 <script>let config = JSON.parse(`<%=
   {
