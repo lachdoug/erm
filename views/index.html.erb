@@ -47,7 +47,7 @@
 </head>
 <body>
 
-<%= settings.fs_dir %>
+  <%= ENV['ERM_FS_DIR'] %> - <%= settings.fs_dir %>
 
 <script>let config = JSON.parse(`<%=
   {
