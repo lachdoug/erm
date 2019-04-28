@@ -53,15 +53,17 @@ app.css = (a,x) => x.appkit.document.css( [
       color: "red",
     },
     ".pills": {
-      padding: "0 .375rem",
+      padding: "0 0.375rem",
       ".btn": {
-        padding: "0 .375rem"
+        padding: "0 0.375rem"
       },
       ".pill-selected": {
         border: "1px solid transparent",
         verticalAlign: "middle",
-        padding: ".375rem",
+        padding: "0 0.375rem",
         color: "grey",
+        lineHeight: "1.5",
+        display: "inline-block",
       }
     },
     ".order-dir": {
