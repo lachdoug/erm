@@ -47,6 +47,8 @@
 </head>
 <body>
 
+<%= Sinatra::Base.development? %>
+
 <script>let config = JSON.parse(`<%=
   {
     logo: config[:logo],
