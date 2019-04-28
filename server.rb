@@ -10,8 +10,12 @@ class Server < Sinatra::Base
       logging: Sinatra::Base.development?,
       dump_errors: Sinatra::Base.development?,
       show_exceptions: false,
+      env_template_params: YAML.load( ENV['ERM_TEMPLATE_PARAMS_YAML'] || '' ) || {},
       fs_dir: ENV['ERM_FS_DIR'] ||
         Sinatra::Base.development? ? "volumes" : "home/fs"
+# debugger
+  FileUtils.cp_r "data/config/.", "config"
+  FileUtils.cp_r "data/public/.", "public"
 
   App::Controllers.configure_erm
   register App::Controllers

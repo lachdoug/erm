@@ -7,7 +7,7 @@ class Server
         collect_dirs = dir_config[:dirs].is_a? Hash
         collect_files = dir_config[:files].is_a? Hash
 
-        parent_data = load_dir_data( dir_path )
+        parent_data = load_dir_data( dir_path ) || {}
 
         list_options = {}
         if collect_files && dir_config[:files][:index]
@@ -22,10 +22,10 @@ class Server
           key = File.basename entry, '.*'
           name = File.basename entry
           path = entry.sub "#{ Server.fs_dir }/", ''
-          entry_id = entry_id entry
+          # entry_id = entry_id entry
           # created = File.ctime entry
           # updated = File.mtime entry
-          dir_data = parent_data[ entry_id ] || {}
+          dir_data = parent_data[ name ] || {}
 
           if File.file? entry
             # debugger
@@ -65,7 +65,7 @@ class Server
             type: type,
             name: name,
             key: key,
-            entry_id: entry_id,
+            # entry_id: entry_id,
             index: dir_data[:index],
             description: description || '',
             order: order,

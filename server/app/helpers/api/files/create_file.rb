@@ -16,7 +16,8 @@ class Server
 
         if file_config[:name].is_a? String
           name_template_params = {
-            created: created.strftime("%F %T")
+            created: created.strftime("%F %T"),
+            env: settings.env_template_params,
           }
 
           if file_config[:index]
@@ -50,7 +51,8 @@ class Server
             index: index,
             created: created.strftime("%F %T"),
             keys: params.tap { |result| result.delete :file }.to_h,
-            metadata: file_params[:metadata] || {}
+            metadata: file_params[:metadata] || {},
+            env: settings.env_template_params,
           }
           content = process_template(
             file_config[:seed] || file_config[:content],
@@ -75,7 +77,8 @@ class Server
             index: index,
             created: created.strftime("%F %T"),
             keys: params.tap { |result| result.delete :file }.to_h,
-            metadata: file_params[:metadata] || {}
+            metadata: file_params[:metadata] || {},
+            env: settings.env_template_params,
           }
           description = process_template(
             file_config[:description],
@@ -85,13 +88,15 @@ class Server
 
         parent_data = load_dir_data parent_path
         # file_id = entry_file_id entry_path
-        file_data = parent_data[ file_id ] || {}
+        file_data = {
+          created: created_milliseconds,
+          metadata: file_params[:metadata].to_h,
+        }
         file_data[:name] = file_params[:name] unless file_config[:name].is_a? String
-        file_data[:created] = created_milliseconds
-        file_data[:metadata] = file_params[:metadata].to_h
         file_data[:index] = index if index
         file_data[:description] = description if description
-        parent_data[ file_id ] = file_data
+
+        parent_data[ file_name ] = file_data
         save_dir_data parent_path, parent_data
 
         {

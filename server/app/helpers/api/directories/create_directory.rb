@@ -16,7 +16,8 @@ class Server
 
         if dir_config[:name].is_a? String
           name_template_params = {
-            created: created.strftime("%F %T")
+            created: created.strftime("%F %T"),
+            env: settings.env_template_params,
           }
 
           if dir_config[:index]
@@ -55,7 +56,8 @@ class Server
             index: index,
             created: created.strftime("%F %T"),
             keys: params.tap { |result| result.delete :dir }.to_h,
-            metadata: dir_params[:metadata] || {}
+            metadata: dir_params[:metadata] || {},
+            env: settings.env_template_params,
           }
           description = process_template(
             dir_config[:description],
@@ -65,13 +67,14 @@ class Server
 
         parent_data = load_dir_data parent_path
         # id = entry_id entry_path
-        dir_data = parent_data[ dir_id ] || {}
+        dir_data = {
+          created: created_milliseconds,
+          metadata: dir_params[:metadata].to_h,
+        }
         dir_data[:name] = dir_params[:name] unless dir_config[:name].is_a? String
-        dir_data[:created] = created_milliseconds
-        dir_data[:metadata] = dir_params[:metadata].to_h
         dir_data[:index] = index if index
         dir_data[:description] = description if description
-        parent_data[ dir_id ] = dir_data
+        parent_data[ name ] = dir_data
         save_dir_data parent_path, parent_data
 
         {

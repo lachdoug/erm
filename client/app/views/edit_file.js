@@ -9,7 +9,7 @@ app.views.edit_file = ( r, data ) => (a,x) => {
         key: "name",
         required: true,
         input: { class: "form-control" },
-        ...data.config.name
+        ...data.config.name,
       } ) : null,
       metadata.length ?
       f.one( "metadata", (ff) => ff.fields( metadata.map(

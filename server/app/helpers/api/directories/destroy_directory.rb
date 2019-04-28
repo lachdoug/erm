@@ -4,13 +4,15 @@ class Server
 
       def destroy_directory( dir_path, dir_config )
 
-        dir_id = entry_id "#{ Server.fs_dir }/#{ dir_path }"
+        # dir_id = entry_id "#{ Server.fs_dir }/#{ dir_path }"
+        name = File.basename dir_path
+# debugger
 
         remove_entry "#{ Server.fs_dir }/#{ dir_path }"
 
         parent_path = parent_path_for dir_path
         parent_data = load_dir_data parent_path
-        parent_data.delete dir_id
+        parent_data.delete name
         save_dir_data parent_path, parent_data
 
         {

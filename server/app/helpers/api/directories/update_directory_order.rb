@@ -9,9 +9,9 @@ class Server
         dir_data = load_dir_data dir_path
         order = dir_params[:order] || []
 
-        order.each.with_index do | entry_id, i |
-          dir_data[ entry_id.to_i ] ||= {}
-          dir_data[ entry_id.to_i ][:order] = i + 1
+        order.each.with_index do | name, i |
+          dir_data[ name ] ||= {}
+          dir_data[ name ][:order] = i + 1
         end
 
         save_dir_data dir_path, dir_data

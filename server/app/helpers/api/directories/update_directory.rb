@@ -8,14 +8,16 @@ class Server
 
         parent_path = parent_path_for dir_path
         parent_data = load_dir_data parent_path
-        dir_id = entry_id "#{ Server.fs_dir }/#{ dir_path }"
-        dir_data = parent_data[ dir_id ] || {}
+        # dir_id = entry_id "#{ Server.fs_dir }/#{ dir_path }"
+        name = File.basename dir_path
+        dir_data = parent_data[ name ] || {}
 
         created = Time.at( dir_data[:created] / 1000 )
 
         if dir_config[:name].is_a? String
           name_template_params = {
-            created: created.strftime("%F %T")
+            created: created.strftime("%F %T"),
+            env: settings.env_template_params,
           }
 
           if dir_config[:index]
@@ -36,7 +38,7 @@ class Server
 
         new_dir_path = "#{ parent_path }/#{ new_name }"
         new_entry_path = "#{ Server.fs_dir }/#{ new_dir_path }"
-        rename_entry "#{ Server.fs_dir }/#{ dir_path }", new_entry_path
+        move_entry "#{ Server.fs_dir }/#{ dir_path }", new_entry_path
 
         dir_id = entry_id new_entry_path
 
@@ -49,7 +51,8 @@ class Server
             index: index,
             created: created.strftime("%F %T"),
             keys: params.tap { |result| result.delete :dir }.to_h,
-            metadata: dir_params[:metadata] || {}
+            metadata: dir_params[:metadata] || {},
+            env: settings.env_template_params,
           }
           description = process_template(
             dir_config[:description],
@@ -58,11 +61,12 @@ class Server
         end
 
         parent_data = load_dir_data parent_path
-        dir_data = parent_data[ dir_id ] || {}
+        dir_data = parent_data[ name ] || {}
         dir_data[:name] = dir_params[:name] unless dir_config[:name].is_a? String
         dir_data[:metadata] = dir_params[:metadata].to_h
         dir_data[:description] = description if description
-        parent_data[ dir_id ] = dir_data
+        parent_data.delete name
+        parent_data[ new_name ] = dir_data
         save_dir_data parent_path, parent_data
 
         {

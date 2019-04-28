@@ -4,10 +4,10 @@ class Server
 
       def edit_file( file_path, file_config )
 
-        name = file_path.split('/').last
-        parent_data = load_dir_data parent_path_for( file_path )
-        file_id = entry_id "#{ Server.fs_dir }/#{ file_path }"
-        file_data = parent_data[ file_id ] || {}
+        name = File.basename file_path
+        parent_data = load_dir_data( parent_path_for( file_path ) ) || {}
+        # file_id = entry_id "#{ Server.fs_dir }/#{ file_path }"
+        file_data = parent_data[ name ] || {}
         metadata_config = file_config[:metadata] || {}
 
         if file_config[:ext]
@@ -28,12 +28,12 @@ class Server
 
         if file_config[:name].is_a? Hash
           file[:config][:name] = file_config[:name]
-          file[:name] = file_data[:name]
+          file[:name] = file_data[:name] || ''
         elsif file_config[:name].is_a? String
           file[:config][:name] = false
         else
           file[:config][:name] = {}
-          file[:name] = file_data[:name]
+          file[:name] = file_data[:name] || ''
         end
 
         file

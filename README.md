@@ -2,190 +2,33 @@
 
 Use ERM to create and manage an orderly file structure.
 
+## Build client
+
+***In development, before pushing production code***
+`rake client:build` to create concatenated and minified client files. Output goes to `public/client.js` and `public/client.min.js`.
+
+
 ## Configure
 
-Configure ERM using `config/erm.yaml`.
+The app expects a configuration repo to be cloned as persistent `data` directory.
 
-```yaml
----
-  logo:
-    height: 35
-    width: 100
-  title: My Resources
-  home:
-    label: "Cool"
-    description: "wow"
-  css:
-    body:
-      backgroundColor: white
-      color: "dimgrey"
-  mount:
-    - name: Clients
-      order: true
-      files:
-        key: Note
-        serialize: yaml
-        as: list
-        metadata:
-          show:
-            as: list
-          form:
-            - field:
-                key: with
-            - field:
-                key: date
-                type: date
-            - field:
-                key: body
-                as: textarea
-        content: |
-          with: {{{ metadata.with }}}
-          date: {{{ metadata.date }}}
-          body: {{{ metadata.body }}}
-      dirs:
-        key: Client
-        description: "RM: {{{ metadata.account_manager }}}"
-        # label: Client
-        metadata:
-          form:
-            - field:
-                key: account_manager
-                as: select
-                collection:
-                  - Lachlan
-                  - Doug
-        dirs:
-          - name: User
-          - name: Projects
-            order: true
-            dirs:
-              key: Project
-              dirs:
-                - name: Data
-                  dirs:
-                    key: Notebook
-                    new: false
-                    delete: false
-                    edit: false
-                    files:
-                      key: Output
-                      new: false
-                      delete: false
-                      edit: false
-                      raw: false
-                      editor: false
-                      as: link
-                      link:
-                        label: Open in Jupyter
-                        href: https://ipjn3.eq8r.com/notebooks/{{ path }}
-                - name: Controllers
-                  order: true
-                  files:
-                    key: Controller
-                    ext: ipynb
-                    raw: false
-                    editor: false
-                    as: link
-                    link:
-                      label: Open in Jupyter
-                      href: https://ipjn3.eq8r.com/notebooks/{{ path }}
-                    seed: |
-                      {
-                        "cells": [
-                          {
-                            "cell_type": "code",
-                            "execution_count": null,
-                            "metadata": {},
-                            "outputs": [],
-                            "source": []
-                          }
-                        ],
-                        "metadata": {
-                          "kernelspec": {
-                            "display_name": "Python 3",
-                            "language": "python",
-                            "name": "python3"
-                          },
-                          "language_info": {
-                            "codemirror_mode": {
-                              "name": "ipython",
-                              "version": 3
-                            },
-                            "file_extension": ".py",
-                            "mimetype": "text/x-python",
-                            "name": "python",
-                            "nbconvert_exporter": "python",
-                            "pygments_lexer": "ipython3",
-                            "version": "3.7.1"
-                          }
-                        },
-                        "nbformat": 4,
-                        "nbformat_minor": 2
-                      }
-                  dirs:
-                    - name: Processes
-                      order: true
-                      files:
-                        key: Process
-                        raw: false
-                        editor: false
-                        ext: ipynb
-                        as: link
-                        link:
-                          label: Open in Jupyter
-                          href: https://ipjn3.eq8r.com/notebooks/{{ path }}
-                        seed: |
-                          {
-                            "cells": [
-                              {
-                                "cell_type": "code",
-                                "execution_count": null,
-                                "metadata": {},
-                                "outputs": [],
-                                "source": []
-                              }
-                            ],
-                            "metadata": {
-                              "kernelspec": {
-                                "display_name": "Python 3",
-                                "language": "python",
-                                "name": "python3"
-                              },
-                              "language_info": {
-                                "codemirror_mode": {
-                                  "name": "ipython",
-                                  "version": 3
-                                },
-                                "file_extension": ".py",
-                                "mimetype": "text/x-python",
-                                "name": "python",
-                                "nbconvert_exporter": "python",
-                                "pygments_lexer": "ipython3",
-                                "version": "3.7.1"
-                              }
-                            },
-                            "nbformat": 4,
-                            "nbformat_minor": 2
-                          }
-mode_map:
-  ipynb: javascript
-```
+The repo should contain two subdirectories.
+- A `config` directory containing a file `erm.yaml`.
+- A `public` directory containing files for icons, logo, webmanifest, etc.
 
-## Actions - NOT SURE IF THIS IS THE BEST WAY TO GET IMAGES INTO APP
 
-### Upload Logo
-1. Form with a file field
-2. Write file `public/logo.png`
+## Actions
 
-### Upload Favicon
-1. Form with a file field
-2. Write file `public/favicon.ico`
+None.
+
 
 ## Services
 
 ### Volumes
 
-Mounts multiple volumes.
+1. Persistent directory `data` for configuration repo.
+
+2. Share multiple volumes, as required by `config/erm.yaml`.
 
 ### OAuth
 
@@ -196,6 +39,12 @@ URL, client ID and secret set in environment.
 ## Deploy
 
 ### Environment
+
+#### ENV['ERM_TEMPLATE_PARAMS_YAML']
+
+Input text. ( should really be code, but text will have to do for now, until new form DSL comes through )
+
+Mutable. Ask at build time. Not mandatory. Not build time only
 
 #### ENV['ERM_FS_DIR']
 
@@ -208,10 +57,6 @@ Defaults to:
 #### ENV['ERM_OAUTH_URL']
 #### ENV['ERM_OAUTH_CLIENT_ID']
 #### ENV['ERM_OAUTH_SECRET']
-
-### Build
-
-`rake client:build` to create concatenated and minified client files. Output goes to `public/client.js` and `public/client.min.js`.
 
 ### Assets
 

@@ -4,10 +4,10 @@ class Server
 
       def edit_directory( dir_path, dir_config )
 
-        name = dir_path.split('/').last
+        name = File.basename dir_path
         parent_data = load_dir_data parent_path_for( dir_path )
-        dir_id = entry_id "#{ Server.fs_dir }/#{ dir_path }"
-        dir_data = parent_data[ dir_id ] || {}
+        # dir_id = entry_id "#{ Server.fs_dir }/#{ dir_path }"
+        dir_data = parent_data[ name ] || {}
 # debugger
         metadata_config = dir_config[:metadata] || {}
 

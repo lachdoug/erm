@@ -7,15 +7,24 @@ class Server
         file_params ||= {}
 
         parent_path = parent_path_for file_path
-        parent_data = load_dir_data parent_path
-        file_id = entry_id "#{ Server.fs_dir }/#{ file_path }"
-        file_data = parent_data[ file_id ] || {}
+        parent_data = load_dir_data( parent_path ) || {}
 
-        created = Time.at( file_data[:created] / 1000 )
+        name = File.basename file_path
+
+        file_data = parent_data[ name ] || {}
+
+        if file_data[:created]
+          created = Time.at(
+            file_data[:created] / 1000 ).strftime("%F %T")
+        else
+          created = ''
+        end
 
         if file_config[:name].is_a? String
+
           name_template_params = {
-            created: created.strftime("%F %T")
+            created: created,
+            env: settings.env_template_params,
           }
 
           if file_config[:index]
@@ -28,6 +37,7 @@ class Server
           name_template = file_config[:name]
 
           new_name = process_template name_template, name_template_params
+
         else
           new_name = file_params[:name]
         end
@@ -42,7 +52,7 @@ class Server
 
         new_file_path = "#{ parent_path }/#{ new_file_name }"
         new_entry_path = "#{ Server.fs_dir }/#{ new_file_path }"
-        rename_entry "#{ Server.fs_dir }/#{ file_path }", new_entry_path
+        move_entry "#{ Server.fs_dir }/#{ file_path }", new_entry_path
 
         if file_config[:content]
           content_template_params = {
@@ -52,9 +62,10 @@ class Server
             path: URI.encode( new_file_path ),
             fs_path: URI.encode( new_file_path.sub( /^[^\/]+\//, '' ) ),
             index: index,
-            created: created.strftime("%F %T"),
+            created: created,
             keys: params.tap { |result| result.delete :file }.to_h,
-            metadata: file_params[:metadata] || {}
+            metadata: file_params[:metadata] || {},
+            env: settings.env_template_params,
           }
           content = process_template(
             file_config[:content],
@@ -71,12 +82,15 @@ class Server
             filename: new_file_name,
             ext: file_config[:ext],
             path: URI.encode( new_file_path ),
-            fs_path: URI.encode( new_file_path.sub( /^[^\/]+\//, '' ) ),
+            fs_path: URI.encode(
+              new_file_path.sub( /^[^\/]+\//, '' )
+            ),
             inode: file_id,
             index: index,
             created: created.strftime("%F %T"),
             keys: params.tap { |result| result.delete :file }.to_h,
-            metadata: file_params[:metadata] || {}
+            metadata: file_params[:metadata] || {},
+            env: settings.env_template_params,
           }
           description = process_template(
             file_config[:description],
@@ -84,12 +98,15 @@ class Server
           )
         end
 
-        parent_data = load_dir_data parent_path
-        file_data = parent_data[ file_id ] || {}
+        new_filename = new_name + ( file_config[:ext] ? ".#{ file_config[:ext] }" : '' )
+
+        parent_data = load_dir_data( parent_path ) || {}
+        file_data = parent_data[ name ] || {}
         file_data[:name] = file_params[:name] unless file_config[:name].is_a? String
         file_data[:metadata] = file_params[:metadata].to_h
         file_data[:description] = description if description
-        parent_data[ file_id ] = file_data
+        parent_data.delete name
+        parent_data[ new_filename ] = file_data
         save_dir_data parent_path, parent_data
 
         {

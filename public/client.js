@@ -223,7 +223,7 @@ app.views.edit_file = ( r, data ) => (a,x) => {
         key: "name",
         required: true,
         input: { class: "form-control" },
-        ...data.config.name
+        ...data.config.name,
       } ) : null,
       metadata.length ?
       f.one( "metadata", (ff) => ff.fields( metadata.map(
@@ -539,7 +539,7 @@ app.views.edit_dir_order = ( r, data ) => (a,x) => {
         f.many( "sort", (ff) => ff.items( [
           (ffi) => x.html5sortable(
             data.entries.map( ( entry, i ) => a.li( [
-              f.input( { name: "dir[order][]", value: entry.entry_id, type: "hidden" } ),
+              f.input( { name: "dir[order][]", value: entry.name, type: "hidden" } ),
               a["p.order-dir-item"]( [
                 app.fa( entry.type === "file" ? "file-o" : "folder", entry.name ),
                 a.i( entry.description ),
@@ -737,9 +737,13 @@ app.views.show_file = ( r, data ) => (a,x) => [
   ] : app.views.show_file.as( r, data ),
 
   a["p.text-center"]( a.small( [
-    a.label( "Created" ), ' ', x.timeago( data.created ),
-    a.br,
-    a.label( "Modified" ), ' ', x.timeago( data.modified ),
+    data.created ?
+      [
+        a.label( "Created" ), ' ',
+        x.timeago( data.created )
+      ] :
+      [ "Creation date unknown" ],
+    [ a.label( "Modified" ), ' ', x.timeago( data.modified ) ],
   ] ) ),
 
   // x.appkit.put( data ),

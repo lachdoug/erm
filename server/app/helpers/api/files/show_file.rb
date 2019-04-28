@@ -11,6 +11,7 @@ class Server
         file[:mode] = mode_map( file_config[:mode] || file_config[:serialize] || file_config[:ext] || file_config[:as] )
 
         as = as_map( file_config[:as] || file_config[:serialize] || file_config[:ext] )
+
         if as
 
           file[:as] = as
@@ -19,7 +20,12 @@ class Server
           when :link
             link_config = file_config[:link] || {}
 
-            created = Time.at( file[:created] / 1000 )
+            if file[:created]
+              created = Time.at(
+                file[:created] / 1000 ).strftime("%F %T")
+            else
+              created = ''
+            end
 
             template_params = {
               name: File.basename( file[:filename] ),
@@ -29,9 +35,10 @@ class Server
               fs_path: URI.encode( file_path.sub( /^[^\/]+\//, '' ) ),
               inode: file[:file_id],
               index: file[:index],
-              created: created.strftime("%F %T"),
+              created: created,
               keys: params.tap { |result| result.delete :file }.to_h,
-              metadata: file[:metadata] || {}
+              metadata: file[:metadata] || {},
+              env: settings.env_template_params,
             }
             href = URI.encode( process_template link_config[:href], template_params )
             file[:link] = {

@@ -27,9 +27,9 @@ class Server
         parent_path = parent_path_for dir_path
 
         parent_data = load_dir_data parent_path
-        dir_id = entry_id "#{ Server.fs_dir }/#{ dir_path }"
+        # dir_id = entry_id "#{ Server.fs_dir }/#{ dir_path }"
 
-        name = URI.decode( dir_path.split('/').last )
+        name = File.basename dir_path
 
         path = URI.encode( "#{ dir_path }/~dir" )
         fs_path = URI.encode( dir_path.sub( /^[^\/]+\//, '' ) )
@@ -37,7 +37,7 @@ class Server
         if behavior === :static
           description = dir_config[:description]
         else
-          dir_data = parent_data[ dir_id ] || {}
+          dir_data = parent_data[ name ] || {}
           description = dir_data[:description]
         end
 # debugger
@@ -47,7 +47,7 @@ class Server
           collect: { dirs: collect_dirs, files: collect_files },
           type: :show_dir,
           entries: entries,
-          dir_id: dir_id,
+          # dir_id: dir_id,
           description: description,
           # key: ,
           order: dir_config[:order],
