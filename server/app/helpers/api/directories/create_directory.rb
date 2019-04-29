@@ -40,6 +40,7 @@ class Server
         entry_path = "#{ Server.fs_dir }/#{ dir_path }"
 
         make_directory entry_path
+        apply_dir_permissions entry_path
         build_static_dirs dir_path, dir_config
 
         # path = URI.encode( "#{ entry_path }/~dir" )
