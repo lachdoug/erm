@@ -63,6 +63,7 @@ class Server
         end
 
         write_file entry_path, content
+        apply_file_permissions entry_path
 
         file_id = entry_id entry_path
 
