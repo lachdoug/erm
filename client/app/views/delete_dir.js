@@ -1,6 +1,9 @@
 app.views.delete_dir = ( r, data ) => (a,x) => [
   a.h4( `Delete ${ data.label }` ),
-  a.p( `Are you sure that you want to delete ${ data.dirname }?`),
+  a.p( [
+    "Are you sure that you want to delete",
+    a.strong( data.dirname ), "?"
+  ] ),
   x.appkit.form( (f) => [
     f.button( {
       icon: "fa fa-times",
