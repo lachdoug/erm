@@ -31,8 +31,8 @@ class Server
               name: File.basename( file[:filename] ),
               filename: file[:filename],
               ext: file[:ext],
-              path: URI.encode( file_path ),
-              fs_path: URI.encode( file_path.sub( /^[^\/]+\//, '' ) ),
+              path: file_path,
+              fs_path: file_path.sub( /^[^\/]+\//, '' ),
               inode: file[:file_id],
               index: file[:index],
               created: created,
@@ -40,7 +40,7 @@ class Server
               metadata: file[:metadata] || {},
               env: settings.env_template_params,
             }
-            href = URI.encode( process_template link_config[:href], template_params )
+            href = process_template link_config[:href], template_params
             file[:link] = {
               label: link_config[:label],
               href: href
