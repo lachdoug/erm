@@ -6,9 +6,11 @@ class Server
 
         # dir_id = entry_id "#{ Server.fs_dir }/#{ dir_path }"
         name = File.basename dir_path
-# debugger
 
-        remove_entry "#{ Server.fs_dir }/#{ dir_path }"
+        entry_path = "#{ Server.fs_dir }/#{ dir_path }"
+        apply_dir_permissions entry_path
+
+        remove_entry entry_path
 
         parent_path = parent_path_for dir_path
         parent_data = load_dir_data parent_path
