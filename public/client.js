@@ -80,6 +80,12 @@ app.css = (a,x) => x.appkit.document.css( [
         }
       }
     },
+    ".bad-entry": {
+      padding: ".375rem .75rem",
+      lineHeight: 1.5,
+      display: "inline-block",
+      color: "red"
+    },
     "appkit-list": {
       fontFamily: "monospace",
       whiteSpace: "pre",
@@ -531,6 +537,44 @@ app.views.new_dir = ( r, data ) => (a,x) => {
 
 }
 
+// app.views.missing_dir_entries = ( r, data ) => (a,x) => {
+//
+//   let entries = data.entries
+//
+//   return [
+//     a.h4( data.dirname ),
+//     "Create missing entries?",
+//     a.ul(
+//       entries.map( function( entry ) {
+//         return a.li( entry )
+//       } )
+//     ),
+//     x.appkit.form( (f) => [
+//       f.button( {
+//         icon: "fa fa-times",
+//         text: "Cancel",
+//         buttonTag: { class: "btn btn-secondary" },
+//         onclick: (e, el, form) => r.open( `/${ data.path }` ),
+//       } ),
+//       " ",
+//       f.submit( {
+//         icon: "fa fa-check",
+//         text: `Create entries`,
+//         buttonTag: { class: "btn btn-primary" },
+//       } ),
+//       // x.appkit.put( data ),
+//     ], {
+//       data: data,
+//       action: `/api/${ data.path }/missing`,
+//       success: function( data, el ) {
+//         r.open( `/${ data.path }` )
+//       },
+//     } )
+//   ]
+//
+//
+// }
+
 app.views.edit_dir_order = ( r, data ) => (a,x) => {
 
   return [
@@ -616,19 +660,16 @@ app.views.show_dir = ( r, data ) => (a,x) => [
 
   ], { class: "clearfix" } ),
 
+  app.views.show_dir.fixes( r, data ),
+
   data.metadata ? app.views.show_dir.metadata( r, data ) : null,
 
   a.hr,
 
   data.entries.length ?
-  data.entries.map( ( entry, i ) => a.p( [
-    app.btn(
-      app.fa( entry.type === "file" ? "file-o" : "folder", entry.name ),
-      () => r.open( `/${ entry.path }` )
-    ),
-    a.i( entry.description ),
-
-  ] ) ) : a.i("No entries"),
+  data.entries.map( ( entry, i ) =>
+    app.views.show_dir.entry( r, entry )
+  ) : a.i("No entries"),
 
   // x.appkit.put( data ),
   // x.appkit.put( r ),
@@ -705,6 +746,47 @@ app.views.edit_raw_file = ( r, data ) => (a,x) => [
 
 ]
 
+app.views.bad_entries = ( r, data ) => (a,x) => {
+
+  let entries = data.entries
+
+  let message = data.problem === "missing" ? "Add missing entries?" : "Remove unknown entries?"
+  let submitText = data.problem === "missing" ? "Create entries?" : "Delete entries?"
+
+  return [
+    a.h4( data.dirname ),
+    message,
+    a.ul(
+      entries.map( function( entry ) {
+        return a.li( entry )
+      } )
+    ),
+    x.appkit.form( (f) => [
+      f.button( {
+        icon: "fa fa-times",
+        text: "Cancel",
+        buttonTag: { class: "btn btn-secondary" },
+        onclick: (e, el, form) => r.open( `/${ data.path }` ),
+      } ),
+      " ",
+      f.submit( {
+        icon: "fa fa-check",
+        text: submitText,
+        buttonTag: { class: "btn btn-primary" },
+      } ),
+      // x.appkit.put( data ),
+    ], {
+      data: data,
+      action: `/api/${ data.path }/${ data.problem }`,
+      success: function( data, el ) {
+        r.open( `/${ data.path }` )
+      },
+    } )
+  ]
+
+
+}
+
 app.views.show_file = ( r, data ) => (a,x) => [
 
   a.h4( [
@@ -747,16 +829,48 @@ app.views.show_file = ( r, data ) => (a,x) => [
   a["p.text-center"]( a.small( [
     data.created ?
       [
-        a.label( "Created" ), ' ',
+        "Created",
         x.timeago( data.created )
       ] :
       [ "Creation date unknown" ],
-    [ a.label( "Modified" ), ' ', x.timeago( data.modified ) ],
+    [ "Modified", x.timeago( data.modified ) ],
   ] ) ),
 
   // x.appkit.put( data ),
 
 ]
+
+app.views.show_dir.fixes = function( r, data ) {
+
+  let unknown = data.entries.some( function( entry ) {
+    return entry.status === "unknown"
+  } )
+
+  let missing = data.entries.some( function( entry ) {
+    return entry.status === "missing"
+  } )
+
+  if ( unknown || missing ) {
+    return (a,x) => a.p( [
+      a.hr(),
+      unknown ?
+        app.btn(
+          app.fa( "minus-square", "Remove unknown" ),
+          () => r.open( `${ r.path }/unknown` ),
+          "link float-right"
+        ) : null,
+      missing ?
+        app.btn(
+          app.fa( "plus-square", "Add missing" ),
+          () => r.open( `${ r.path }/missing` ),
+          "link"
+        ) : null,
+    ], { class: "clearfix" } )
+  } else {
+    return null
+  }
+
+}
 
 app.views.show_dir.metadata = ( r, data ) => (a,x) => {
 
@@ -833,6 +947,37 @@ app.views.show_dir.metadata = ( r, data ) => (a,x) => {
   }
 
   return a.p( component )
+
+}
+
+app.views.show_dir.entry = function( r, entry ) {
+
+  if ( entry.status === "present" ) {
+
+    return (a,x) => a.p( [
+      app.btn(
+        app.fa(
+          app.views.show_dir.entry.icon( entry ),
+          entry.name
+        ),
+        () => r.open( `/${ entry.path }` )
+      ),
+      a.i( entry.description ),
+    ] )
+
+  } else {
+
+    return (a,x) => a.p( [
+      a[".bad-entry"](
+        app.fa(
+          app.views.show_dir.entry.icon( entry ),
+          entry.name
+        )
+      ),
+      a.i( entry.description ),
+    ] )
+
+  }
 
 }
 
@@ -915,5 +1060,27 @@ app.views.show_file.as = ( r, data ) => (a,x) => {
   }
 
   return a.p( component )
+
+}
+
+app.views.show_dir.entry.icon = function( entry ) {
+
+  if ( entry.type === "file" ) {
+    if ( entry.status === "missing" ) {
+      return "exclamation"
+    } else if ( entry.status === "unknown" ) {
+      return "question"
+    } else {
+      return "file-o"
+    }
+  } else {
+    if ( entry.status === "missing" ) {
+      return "exclamation-circle"
+    } else if ( entry.status === "unknown" ) {
+      return "question-circle"
+    } else {
+      return "folder"
+    }
+  }
 
 }
