@@ -15,13 +15,10 @@ class Server
           {
             path: "#{ name }/~dir",
             name: name,
+            type: :dir,
+            status: :present,
             label: root_config[:label],
-            # key: name,
-            # id: id,
             description: description,
-            # metadata: entry_metadata,
-            # created: File.ctime( "#{ Server.fs_dir }/#{ name }" ),
-            # updadte: File.mtime( "#{ Server.fs_dir }/#{ name }" )
           }
         end
 
@@ -29,17 +26,12 @@ class Server
 
         {
           name: '',
-          key: '',
           label: home_config[:label],
           description: home_config[:description],
           type: :show_dir,
           collection: false,
           collect: { dirs: false, files: false },
           entries: entries,
-          # config: mounts_config,
-          # metadata: {},
-          # created: nil,
-          # updated: nil,
         }
 
       end

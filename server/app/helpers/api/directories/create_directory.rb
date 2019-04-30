@@ -41,18 +41,18 @@ class Server
 
         make_directory entry_path
         apply_dir_permissions entry_path
-        build_static_dirs dir_path, dir_config
+        build_dirs_entries dir_path, dir_config
 
         # path = URI.encode( "#{ entry_path }/~dir" )
 
         dir_id = entry_id entry_path
 
         if dir_config[:description]
-          fs_path = URI.encode( dir_path.sub( /^[^\/]+\//, '' ) )
+          fs_path = dir_path.sub( /^[^\/]+\//, '' )
           description_template_params = {
             name: name,
-            path: URI.encode( dir_path ),
-            fs_path: URI.encode( dir_path.sub( /^[^\/]+\//, '' ) ),
+            path: dir_path,
+            fs_path: dir_path.sub( /^[^\/]+\//, '' ),
             inode: dir_id,
             index: index,
             created: created.strftime("%F %T"),
@@ -80,7 +80,7 @@ class Server
 
         {
           type: :create_dir,
-          path: URI.encode( "#{ dir_path }/~dir" )
+          path: "#{ dir_path }/~dir"
         }
 
       rescue Errno::EEXIST

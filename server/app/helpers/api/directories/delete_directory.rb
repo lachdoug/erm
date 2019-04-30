@@ -10,7 +10,7 @@ class Server
           type: :delete_dir,
           dirname: name,
           label: dir_config[:label] || dir_config[:key],
-          path: URI.encode( "#{ dir_path }/~dir" ),
+          path: "#{ dir_path }/~dir",
           key: dir_config[:key],
           # config: dir_config
         }

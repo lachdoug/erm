@@ -26,7 +26,7 @@ class Server
         end
 
         file = {
-          path: URI.encode( "#{ file_path }/~file" ),
+          path: "#{ file_path }/~file",
           filename: name,
           ext: file_config[:ext],
           label: label,

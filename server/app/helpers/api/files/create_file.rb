@@ -46,8 +46,8 @@ class Server
             name: name,
             filename: file_name,
             ext: file_config[:ext],
-            path: URI.encode( new_file_path ),
-            fs_path: URI.encode( new_file_path.sub( /^[^\/]+\//, '' ) ),
+            path: new_file_path,
+            fs_path: new_file_path.sub( /^[^\/]+\//, '' ),
             index: index,
             created: created.strftime("%F %T"),
             keys: params.tap { |result| result.delete :file }.to_h,
@@ -72,8 +72,8 @@ class Server
             name: name,
             filename: file_name,
             ext: file_config[:ext],
-            path: URI.encode( new_file_path ),
-            fs_path: URI.encode( new_file_path.sub( /^[^\/]+\//, '' ) ),
+            path: new_file_path,
+            fs_path: new_file_path.sub( /^[^\/]+\//, '' ),
             inode: file_id,
             index: index,
             created: created.strftime("%F %T"),
@@ -102,7 +102,7 @@ class Server
 
         {
           type: :create_file,
-          path: URI.encode( "#{ new_file_path }/~file" )
+          path: "#{ new_file_path }/~file"
         }
 
       rescue Errno::EEXIST

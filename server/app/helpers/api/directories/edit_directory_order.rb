@@ -12,7 +12,7 @@ class Server
           name: name,
           # label: dir_config[:label] || dir_config[:key],
           entries: entries,
-          path: URI.encode( "#{ dir_path }/~dir" ),
+          path: "#{ dir_path }/~dir",
           # key: dir_config[:key],
           # config: dir_config
         }

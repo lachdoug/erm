@@ -45,8 +45,8 @@ class Server
         if dir_config[:description]
           description_template_params = {
             name: new_name,
-            path: URI.encode( new_dir_path ),
-            fs_path: URI.encode( new_dir_path.sub( /^[^\/]+\//, '' ) ),
+            path: new_dir_path,
+            fs_path: new_dir_path.sub( /^[^\/]+\//, '' ),
             inode: dir_id,
             index: index,
             created: created.strftime("%F %T"),
@@ -71,7 +71,7 @@ class Server
 
         {
           type: :update_dir,
-          path: URI.encode( "#{ new_dir_path }/~dir" ),
+          path: "#{ new_dir_path }/~dir",
         }
 
       rescue Errno::ENOENT
@@ -107,7 +107,7 @@ end
 # new_dir_path = "#{ dir_path }/#{ name }"
 # entry_path = "#{ Server.fs_dir }/#{ new_dir_path }"
 # make_directory entry_path
-# build_static_dirs new_dir_path, dir_config
+# build_dirs_entries new_dir_path, dir_config
 #
 # metadata = load_metadata dir_path
 # dir_id = entry_id entry_path

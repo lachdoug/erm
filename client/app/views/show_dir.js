@@ -41,19 +41,16 @@ app.views.show_dir = ( r, data ) => (a,x) => [
 
   ], { class: "clearfix" } ),
 
+  app.views.show_dir.fixes( r, data ),
+
   data.metadata ? app.views.show_dir.metadata( r, data ) : null,
 
   a.hr,
 
   data.entries.length ?
-  data.entries.map( ( entry, i ) => a.p( [
-    app.btn(
-      app.fa( entry.type === "file" ? "file-o" : "folder", entry.name ),
-      () => r.open( `/${ entry.path }` )
-    ),
-    a.i( entry.description ),
-
-  ] ) ) : a.i("No entries"),
+  data.entries.map( ( entry, i ) =>
+    app.views.show_dir.entry( r, entry )
+  ) : a.i("No entries"),
 
   // x.appkit.put( data ),
   // x.appkit.put( r ),

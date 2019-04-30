@@ -33,6 +33,26 @@ class Server
           delete_directory dir_path, dir_config
         end
 
+        get "#{ subdir_route }/~dir/missing/?" do
+          dir_path = path_for request, '/~dir/missing'
+          bad_entries :missing, dir_path, dir_config
+        end
+
+        post "#{ subdir_route }/~dir/missing/?" do
+          dir_path = path_for request, '/~dir/missing'
+          fix_bad_entries :missing, dir_path, dir_config
+        end
+
+        get "#{ subdir_route }/~dir/unknown/?" do
+          dir_path = path_for request, '/~dir/unknown'
+          bad_entries :unknown, dir_path, dir_config
+        end
+
+        post "#{ subdir_route }/~dir/unknown/?" do
+          dir_path = path_for request, '/~dir/unknown'
+          fix_bad_entries :unknown, dir_path, dir_config
+        end
+
         get "#{ subdir_route }/~dir/?" do
           dir_path = path_for request, "/~dir"
           show_directory :collection, dir_path, dir_config

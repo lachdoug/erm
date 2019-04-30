@@ -2,7 +2,7 @@ class Server
   module App
     module Helpers
 
-      def build_static_dirs( dir, dir_config )
+      def build_dirs_entries( dir, dir_config )
 
         touch_directory "#{ Server.fs_dir }/#{ dir }"
 
@@ -12,7 +12,7 @@ class Server
             entry_path = "#{ Server.fs_dir }/#{ dir_path }"
             touch_directory entry_path
             apply_dir_permissions entry_path
-            build_static_dirs "#{ dir_path }/", subdir_config
+            build_dirs_entries "#{ dir_path }/", subdir_config
           end
         end
 

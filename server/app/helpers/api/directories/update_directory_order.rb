@@ -18,7 +18,7 @@ class Server
 
         {
           type: :update_dir_order,
-          path: URI.encode( "#{ dir_path }/~dir" )
+          path: "#{ dir_path }/~dir"
         }
 
       rescue Errno::ENOENT

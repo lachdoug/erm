@@ -10,7 +10,7 @@ class Server
 
         {
           type: :update_raw_file,
-          path: URI.encode( "#{ file_path }/~file" )
+          path: "#{ file_path }/~file",
         }
 
       rescue Errno::ENOENT

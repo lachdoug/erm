@@ -17,7 +17,7 @@ class Server
           dirname: name,
           label: dir_config[:label] || dir_config[:key],
           metadata: dir_data[:metadata] || {},
-          path: URI.encode( "#{ dir_path }/~dir" ),
+          path: "#{ dir_path }/~dir",
           config: {
             metadata: metadata_config[:form],
             # label: dir_config[:label] || dir_config[:key],

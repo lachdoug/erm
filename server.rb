@@ -52,7 +52,7 @@ class Server < Sinatra::Base
     pass if request.path_info.match /^\/vendor\/?|^\/assets\//
     if request.path_info.match /^\/api\/?/
       content_type :text
-      "Not found."
+      "Serve route not found."
     else
       pass unless request.request_method === "GET"
       status 200

@@ -86,7 +86,7 @@ class Server
         file
 
       rescue Errno::ENOENT
-
+debugger
         name = file_path.match( /([^\/]+)$/ )
         raise ApiError.new( "#{ name } does not exist.", 404 )
 

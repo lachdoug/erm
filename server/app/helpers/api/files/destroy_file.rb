@@ -15,8 +15,8 @@ class Server
         save_dir_data parent_path, dir_data
 
         {
-          type: :delete_file,
-          path: URI.encode( "#{ parent_path }/~dir" ),
+          type: :destroy_file,
+          path: "#{ parent_path }/~dir",
           # key: file_config[:key],
         }
 

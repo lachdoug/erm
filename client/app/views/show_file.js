@@ -40,11 +40,11 @@ app.views.show_file = ( r, data ) => (a,x) => [
   a["p.text-center"]( a.small( [
     data.created ?
       [
-        a.label( "Created" ), ' ',
+        "Created",
         x.timeago( data.created )
       ] :
       [ "Creation date unknown" ],
-    [ a.label( "Modified" ), ' ', x.timeago( data.modified ) ],
+    [ "Modified", x.timeago( data.modified ) ],
   ] ) ),
 
   // x.appkit.put( data ),

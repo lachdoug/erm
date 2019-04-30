@@ -19,7 +19,7 @@ class Server
           # name: file_data[:name],
           label: file_config[:label] || file_config[:key],
           metadata: file_data[:metadata] || {},
-          path: URI.encode( "#{ file_path }/~file" ),
+          path: "#{ file_path }/~file",
           config: {
             metadata: metadata_config[:form],
           },

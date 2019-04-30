@@ -32,6 +32,12 @@ app.css = (a,x) => x.appkit.document.css( [
         }
       }
     },
+    ".bad-entry": {
+      padding: ".375rem .75rem",
+      lineHeight: 1.5,
+      display: "inline-block",
+      color: "red"
+    },
     "appkit-list": {
       fontFamily: "monospace",
       whiteSpace: "pre",

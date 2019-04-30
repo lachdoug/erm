@@ -8,7 +8,7 @@ class Server
 
         file = {
           type: :new_file,
-          path: URI.encode( "#{ dir_path }/~dir" ),
+          path: "#{ dir_path }/~dir",
           label: file_config[:label] || file_config[:key],
           config: {
             metadata: file_metadata[:form],

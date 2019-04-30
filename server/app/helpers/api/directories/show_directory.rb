@@ -31,8 +31,8 @@ class Server
 
         name = File.basename dir_path
 
-        path = URI.encode( "#{ dir_path }/~dir" )
-        fs_path = URI.encode( dir_path.sub( /^[^\/]+\//, '' ) )
+        path = "#{ dir_path }/~dir"
+        fs_path = dir_path.sub( /^[^\/]+\//, '' )
 
         if behavior === :static
           description = dir_config[:description]

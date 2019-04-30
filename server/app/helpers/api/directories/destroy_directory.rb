@@ -16,8 +16,8 @@ class Server
         save_dir_data parent_path, parent_data
 
         {
-          type: :delete_dir,
-          path: URI.encode( "#{ parent_path }/~dir" )
+          type: :destroy_dir,
+          path: "#{ parent_path }/~dir"
         }
 
       rescue Errno::ENOENT

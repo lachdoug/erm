@@ -10,7 +10,7 @@ class Server
           type: :delete_file,
           filename: name,
           label: file_config[:label] || file_config[:key],
-          path: URI.encode( "#{ file_path }/~file" ),
+          path: "#{ file_path }/~file",
           # key: file_config[:key],
         }
 

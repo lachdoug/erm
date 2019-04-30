@@ -8,7 +8,7 @@ class Server
 
         dir = {
           type: :new_dir,
-          path: URI.encode( "#{ dir_path }/~dir" ),
+          path: "#{ dir_path }/~dir",
           label: dir_config[:label] || dir_config[:key],
           config: {
             # key: dir_config[:key],
