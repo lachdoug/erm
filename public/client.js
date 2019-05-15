@@ -29,7 +29,7 @@ app.navbar = (r) => (a,x) => [
     config.title || 'ERM'
   ] ),
   a["div.container.clearfix"]( r.routes( {
-    '%%': app.pills
+    '%%': app.navbar.pills
   } ) ),
   a.hr,
 
@@ -117,6 +117,11 @@ app.css = (a,x) => x.appkit.document.css( [
     ".fullscreen .CodeMirror-scroll": {
       maxHeight: "unset",
     },
+    ".file-open-iframe": {
+      width: "100%",
+      height: "80vh",
+      border: "none",
+    }
   },
   config.css || {}
 ] )
@@ -132,100 +137,12 @@ app.btn = function( component, onclick, klass='link', options={} ) {
   } )
 }
 
-app.pills = (r) => (a,x) => {
-
-  let location = r.path
-  if ( location === '/~dir' ) location = '/'
-  let path_match = location.match( /^((.*)\/~(file|dir|subdir))(.*)$/ )
-
-  let base_path
-  let type
-  let action
-  let names
-
-  if ( path_match ) {
-    base_path = path_match[2]
-    type = path_match[3]
-    action = path_match[4]
-    names = base_path.split( '/' )
-  } else {
-    base_path = '/'
-    type = 'dir'
-    action = ''
-    names = ['']
-  }
-
-  let scope = ''
-  let pills = []
-  let up_path
-  // debugger
-  let last_i = names.length - 1
-  let up_i = last_i - ( action ? 0 : 1 )
-
-  names.forEach( ( name, i) => {
-
-    let path = `${ scope }${ name }`
-    let component
-
-    if ( i === 0 && i === last_i ) {
-
-      if ( base_path === location ) {
-        component = a['.pill-selected']( app.fa( "home" ) )
-      } else {
-        component = app.btn( app.fa( 'home' ), ()=> r.open( `/` ) )
-      }
-    } else if ( i === 0 ) {
-      component = app.btn( app.fa( 'home' ), ()=> r.open( `/` ) )
-    } else if ( i === last_i ) {
-      let fa = type === "dir" ? "folder" : "file-o"
-      if ( action ) {
-        component = app.btn(
-          app.fa( fa, decodeURIComponent( name ) ),
-          ()=> r.open( `${ path }/~${ type }` )
-        )
-        // debugger
-        up_path = `${ path }/~${ type }`
-      } else {
-        component = a['.pill-selected']( app.fa(
-          fa, decodeURIComponent( name )
-        ) )
-        // debugger
-        up_path = `${ scope }~dir`
-      }
-    } else {
-      component = app.btn(
-        app.fa( 'folder', decodeURIComponent( name ) ),
-        ()=> r.open( `${ path }/~dir` )
-      )
-    }
-
-    pills.push( component )
-
-    // if ( path && i === up_i ) up_path = `${ path }`
-
-    scope = `${ path }/`
-
-  } )
-// debugger
-  let component = [
-    ( pills.length > 1 ) ? app.btn(
-      app.fa( 'arrow-up' ),
-      ()=> r.open( up_path ),
-      "link float-right"
-    ) : null,
-    pills,
-  ]
-
-  return a["p.pills"]( component )
-
-}
-
 app.views.edit_file = ( r, data ) => (a,x) => {
 
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( data.key ),
+    a.h4( `Edit ${ data.label }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",
@@ -261,10 +178,10 @@ app.views.edit_file = ( r, data ) => (a,x) => {
       " ",
       f.submit( {
         icon: "fa fa-check",
-        text: `Update ${ data.label }`,
+        text: `Update ${ data.type }`,
         buttonTag: { class: "btn btn-primary" },
       } ),
-      // x.appkit.put( data ),
+      ,
     ], {
       data: data,
       action: `/api/${ data.path }`,
@@ -282,7 +199,7 @@ app.views.edit_dir = ( r, data ) => (a,x) => {
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( data.dirname ),
+    a.h4( `Edit ${ data.label }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",
@@ -319,10 +236,10 @@ app.views.edit_dir = ( r, data ) => (a,x) => {
       " ",
       f.submit( {
         icon: "fa fa-check",
-        text: `Update ${ data.label }`,
+        text: `Update ${ data.type }`,
         buttonTag: { class: "btn btn-primary" },
       } ),
-      // x.appkit.put( data ),
+      ,
     ], {
       data: data,
       action: `/api/${ data.path }`,
@@ -340,7 +257,7 @@ app.views.renderer = ( r, data ) => (a,x) => {
 
   return a["app-view"]( [
     app.views.error( r, data ),
-    app.views[ data.type ]( r, data )
+    app.views[ data.view ]( r, data )
   ] )
 
 }
@@ -357,8 +274,8 @@ app.views.resolver = (r) => ( el, dataPromise ) => [
 app.views.delete_dir = ( r, data ) => (a,x) => [
   a.h4( `Delete ${ data.label }` ),
   a.p( [
-    "Are you sure that you want to delete",
-    a.strong( data.dirname ), "?"
+    "Are you sure that you want to delete the directory ",
+    a.strong( data.dirname ), " and all its contents?"
   ] ),
   x.appkit.form( (f) => [
     f.button( {
@@ -370,10 +287,9 @@ app.views.delete_dir = ( r, data ) => (a,x) => [
     " ",
     f.submit( {
       icon: "fa fa-check",
-      text: `Delete ${ data.key }`,
+      text: `Delete ${ data.type }`,
       buttonTag: { class: "btn btn-primary" },
     } ),
-    // x.appkit.put( data ),
   ], {
     method: 'DELETE',
     action: `/api/${ data.path }`,
@@ -388,7 +304,7 @@ app.views.new_file = ( r, data ) => (a,x) => {
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( `New ${ data.label }` ),
+    a.h4( `New ${ data.type }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",
@@ -425,10 +341,10 @@ app.views.new_file = ( r, data ) => (a,x) => {
       " ",
       f.submit( {
         icon: "fa fa-check",
-        text: `Create ${ data.label }`,
+        text: `Create ${ data.type }`,
         buttonTag: { class: "btn btn-primary" },
       } ),
-      // x.appkit.put( data ),
+
     ], {
       action: `/api/${ data.path }/file`,
       scope: "file",
@@ -453,7 +369,7 @@ app.views.error = function( r, data ) {
 app.views.delete_file = ( r, data ) => (a,x) => [
   a.h4( `Delete ${ data.label }` ),
   a.p( [
-    "Are you sure that you want to delete",
+    "Are you sure that you want to delete the file",
     a.strong( data.filename ), "?"
   ] ),
   x.appkit.form( (f) => [
@@ -466,10 +382,9 @@ app.views.delete_file = ( r, data ) => (a,x) => [
     " ",
     f.submit( {
       icon: "fa fa-check",
-      text: `Delete ${ data.label }`,
+      text: `Delete ${ data.type }`,
       buttonTag: { class: "btn btn-primary" },
     } ),
-    // x.appkit.put( data ),
   ], {
     method: 'DELETE',
     action: `/api/${ data.path }`,
@@ -484,7 +399,7 @@ app.views.new_dir = ( r, data ) => (a,x) => {
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( `New ${ data.label }` ),
+    a.h4( `New ${ data.type }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",
@@ -503,7 +418,6 @@ app.views.new_dir = ( r, data ) => (a,x) => {
                   input: { class: "form-control", ...field.input },
                   select: { class: "form-control", ...field.select },
                   textarea: { class: "form-control", ...field.textarea },
-                  // input: { class: "form-control" },
                 }
               } else {
                 return component.tag
@@ -521,7 +435,7 @@ app.views.new_dir = ( r, data ) => (a,x) => {
       " ",
       f.submit( {
         icon: "fa fa-check",
-        text: `Create ${ data.label }`,
+        text: `Create ${ data.type }`,
         buttonTag: { class: "btn btn-primary" },
       } ),
     ], {
@@ -532,53 +446,14 @@ app.views.new_dir = ( r, data ) => (a,x) => {
       },
     } ),
 
-    // x.appkit.put( data ),
   ]
 
 }
 
-// app.views.missing_dir_entries = ( r, data ) => (a,x) => {
-//
-//   let entries = data.entries
-//
-//   return [
-//     a.h4( data.dirname ),
-//     "Create missing entries?",
-//     a.ul(
-//       entries.map( function( entry ) {
-//         return a.li( entry )
-//       } )
-//     ),
-//     x.appkit.form( (f) => [
-//       f.button( {
-//         icon: "fa fa-times",
-//         text: "Cancel",
-//         buttonTag: { class: "btn btn-secondary" },
-//         onclick: (e, el, form) => r.open( `/${ data.path }` ),
-//       } ),
-//       " ",
-//       f.submit( {
-//         icon: "fa fa-check",
-//         text: `Create entries`,
-//         buttonTag: { class: "btn btn-primary" },
-//       } ),
-//       // x.appkit.put( data ),
-//     ], {
-//       data: data,
-//       action: `/api/${ data.path }/missing`,
-//       success: function( data, el ) {
-//         r.open( `/${ data.path }` )
-//       },
-//     } )
-//   ]
-//
-//
-// }
-
 app.views.edit_dir_order = ( r, data ) => (a,x) => {
 
   return [
-    a.h4( `Order ${ data.name }` ),
+    a.h4( `Order ${ data.label }` ),
     a.p( [
       app.btn(
         app.fa( "check", `Done` ),
@@ -593,7 +468,7 @@ app.views.edit_dir_order = ( r, data ) => (a,x) => {
             data.entries.map( ( entry, i ) => a.li( [
               f.input( { name: "dir[order][]", value: entry.name, type: "hidden" } ),
               a["p.order-dir-item"]( [
-                app.fa( entry.type === "file" ? "file-o" : "folder", entry.name ),
+                app.fa( entry.entry_type === "file" ? "file-o" : "folder", entry.label ),
                 a.i( entry.description ),
               ] )
             ] ) ),
@@ -620,7 +495,7 @@ app.views.edit_dir_order = ( r, data ) => (a,x) => {
 app.views.show_dir = ( r, data ) => (a,x) => [
 
   a.h4( [
-    data.dirname || data.label || "Home",
+    data.label,
     ' ',
     a.small( a.i( data.description ) ),
   ] ),
@@ -629,7 +504,7 @@ app.views.show_dir = ( r, data ) => (a,x) => [
 
     data.item && data.item.edit ?
     app.btn(
-      app.fa( "tag", data.label ),
+      app.fa( "tag", data.type ),
       () => r.open( `${ r.path }/edit` )
     ) : null,
 
@@ -641,19 +516,19 @@ app.views.show_dir = ( r, data ) => (a,x) => [
 
     data.collect.dirs && data.collect.dirs.new ?
       app.btn(
-        app.fa( "plus-square", `New ${ data.collect.dirs.key }` ),
+        app.fa( "plus-square", `New ${ data.collect.dirs.type }` ),
         () => r.open( `${ r.path }/subdir/new` )
       ) : null,
 
     data.collect.files && data.collect.files.new ?
       app.btn(
-        app.fa( "plus-square-o", `New ${ data.collect.files.key }` ),
+        app.fa( "plus-square-o", `New ${ data.collect.files.type }` ),
         () => r.open( `${ r.path }/file/new` )
       ) : null,
 
     data.item && data.item.delete ?
       app.btn(
-        app.fa( "trash", `Delete ${ data.label }` ),
+        app.fa( "trash", `Delete ${ data.type }` ),
         () => r.open( `${ r.path }/delete` ),
         "link float-right"
       ) : null,
@@ -670,9 +545,6 @@ app.views.show_dir = ( r, data ) => (a,x) => [
   data.entries.map( ( entry, i ) =>
     app.views.show_dir.entry( r, entry )
   ) : a.i("No entries"),
-
-  // x.appkit.put( data ),
-  // x.appkit.put( r ),
 
   data.created ? [
     a.hr,
@@ -729,10 +601,9 @@ app.views.edit_raw_file = ( r, data ) => (a,x) => [
     " ",
     f.submit( {
       icon: "fa fa-check",
-      text: `Update ${ data.label }`,
+      text: `Update ${ data.type }`,
       buttonTag: { class: "btn btn-primary" },
     } ),
-
   ], {
     data: data,
     action: `/api/${ data.path }/raw`,
@@ -742,7 +613,7 @@ app.views.edit_raw_file = ( r, data ) => (a,x) => [
     },
   } ),
 
-  // x.appkit.put( data ),
+  ,
 
 ]
 
@@ -774,7 +645,6 @@ app.views.bad_entries = ( r, data ) => (a,x) => {
         text: submitText,
         buttonTag: { class: "btn btn-primary" },
       } ),
-      // x.appkit.put( data ),
     ], {
       data: data,
       action: `/api/${ data.path }/${ data.problem }`,
@@ -790,7 +660,7 @@ app.views.bad_entries = ( r, data ) => (a,x) => {
 app.views.show_file = ( r, data ) => (a,x) => [
 
   a.h4( [
-    data.filename,
+    data.label,
     ' ',
     a.small( a.i( data.description ) ),
   ] ),
@@ -798,7 +668,7 @@ app.views.show_file = ( r, data ) => (a,x) => [
   a.p( [
 
     data.item && data.item.edit ? app.btn(
-      app.fa( "tag", data.label ),
+      app.fa( "tag", data.type ),
       () => r.open( `${ r.path }/edit` )
     ) : null,
 
@@ -813,7 +683,7 @@ app.views.show_file = ( r, data ) => (a,x) => [
     ) : null,
 
     data.item && data.item.delete ? app.btn(
-      app.fa( "trash", `Delete ${ data.label }` ),
+      app.fa( "trash", `Delete ${ data.type }` ),
       () => r.open( `${ r.path }/delete` ),
       "link float-right",
     ) : null,
@@ -836,9 +706,91 @@ app.views.show_file = ( r, data ) => (a,x) => [
     [ "Modified", x.timeago( data.modified ) ],
   ] ) ),
 
-  // x.appkit.put( data ),
-
 ]
+
+app.navbar.pills = (r) => (a,x) => {
+
+  let location = r.path
+  if ( location === '/~dir' ) location = '/'
+  let path_match = location.match( /^((.*)\/~(dir|subdir|file))(.*)$/ )
+
+  let base_path
+  let entry_type
+  let action
+  let segments
+
+  if ( path_match ) {
+    base_path = path_match[2]
+    entry_type = path_match[3]
+    action = path_match[4]
+    segments = base_path.split( '/' )
+  } else {
+    base_path = '/'
+    entry_type = 'dir'
+    action = ''
+    segments = ['']
+  }
+
+  let scope = ''
+  let pills = []
+  let up_path
+
+  let last_i = segments.length - 1
+  let up_i = last_i - ( action ? 0 : 1 )
+
+  segments.forEach( ( segment, i) => {
+
+    let path = `${ scope }${ segment }`
+    let component
+
+    if ( i === 0 && i === last_i ) {
+
+      if ( base_path === location ) {
+        component = a['.pill-selected']( app.fa( "home" ) )
+      } else {
+        component = app.btn( app.fa( 'home' ), ()=> r.open( `/` ) )
+      }
+    } else if ( i === 0 ) {
+      component = app.btn( app.fa( 'home' ), ()=> r.open( `/` ) )
+    } else if ( i === last_i ) {
+      let fa = entry_type === "dir" ? "folder" : "file-o"
+      if ( action ) {
+        component = app.btn(
+          app.fa( fa, decodeURIComponent( segment ) ),
+          ()=> r.open( `${ path }/~${ entry_type }` )
+        )
+        up_path = `${ path }/~${ entry_type }`
+      } else {
+        component = a['.pill-selected']( app.fa(
+          fa, decodeURIComponent( segment )
+        ) )
+        up_path = `${ scope }~dir`
+      }
+    } else {
+      component = app.btn(
+        app.fa( 'folder', decodeURIComponent( segment ) ),
+        ()=> r.open( `${ path }/~dir` )
+      )
+    }
+
+    pills.push( component )
+
+    scope = `${ path }/`
+
+  } )
+
+  let component = [
+    ( pills.length > 1 ) ? app.btn(
+      app.fa( 'arrow-up' ),
+      ()=> r.open( up_path ),
+      "link float-right"
+    ) : null,
+    pills,
+  ]
+
+  return a["p.pills"]( component )
+
+}
 
 app.views.show_dir.fixes = function( r, data ) {
 
@@ -958,7 +910,7 @@ app.views.show_dir.entry = function( r, entry ) {
       app.btn(
         app.fa(
           app.views.show_dir.entry.icon( entry ),
-          entry.name
+          entry.label
         ),
         () => r.open( `/${ entry.path }` )
       ),
@@ -971,7 +923,7 @@ app.views.show_dir.entry = function( r, entry ) {
       a[".bad-entry"](
         app.fa(
           app.views.show_dir.entry.icon( entry ),
-          entry.name
+          entry.label
         )
       ),
       a.i( entry.description ),
@@ -989,7 +941,7 @@ app.views.show_file.as = ( r, data ) => (a,x) => {
 
     let link = data.link || {}
     let href = link.href
-    let label = link.label || "Open"
+    let label = link.label || "Link"
 
     component.push(
       a.hr,
@@ -997,6 +949,17 @@ app.views.show_file.as = ( r, data ) => (a,x) => {
         app.fa( "external-link", label ),
         { href: href, target: href, class: 'btn btn-link' }
       ),
+      a.hr,
+    )
+
+  } else if ( data.as === "iframe" ) {
+
+    component.push(
+      `/open/${ data.path }`,
+      a.iframe(
+        { src: `/iframe/${ data.path }`, class: "file-open-iframe" }
+      ),
+      a.p("Hi"),
       a.hr,
     )
 
@@ -1065,7 +1028,7 @@ app.views.show_file.as = ( r, data ) => (a,x) => {
 
 app.views.show_dir.entry.icon = function( entry ) {
 
-  if ( entry.type === "file" ) {
+  if ( entry.entry_type === "file" ) {
     if ( entry.status === "missing" ) {
       return "exclamation"
     } else if ( entry.status === "unknown" ) {
