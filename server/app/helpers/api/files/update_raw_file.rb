@@ -9,7 +9,7 @@ class Server
         write_file entry_path, file_params[:contents]
 
         {
-          type: :update_raw_file,
+          view: :update_raw_file,
           path: "#{ file_path }/~file",
         }
 

@@ -6,7 +6,7 @@ class Server
 
         file = file_entry behavior, file_path, file_config
 
-        file[:type] = :show_file
+        file[:view] = :show_file
 
         file[:mode] = mode_map( file_config[:mode] || file_config[:serialize] || file_config[:ext] || file_config[:as] )
 
@@ -28,7 +28,7 @@ class Server
             end
 
             template_params = {
-              name: File.basename( file[:filename] ),
+              name: file[:name],
               filename: file[:filename],
               ext: file[:ext],
               path: file_path,
@@ -57,7 +57,6 @@ class Server
             file_contents = read_file entry_path
             case serialize.to_sym
             when :yaml
-              # debugger
               if file_contents.empty?
                 file[:object] = {}
               else
@@ -68,7 +67,6 @@ class Server
                 end
               end
             when :json
-              # debugger
               if file_contents.empty?
                 file[:object] = {}
               else
@@ -86,7 +84,7 @@ class Server
         file
 
       rescue Errno::ENOENT
-debugger
+
         name = file_path.match( /([^\/]+)$/ )
         raise ApiError.new( "#{ name } does not exist.", 404 )
 

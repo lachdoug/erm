@@ -1,7 +1,7 @@
 app.views.edit_dir_order = ( r, data ) => (a,x) => {
 
   return [
-    a.h4( `Order ${ data.name }` ),
+    a.h4( `Order ${ data.label }` ),
     a.p( [
       app.btn(
         app.fa( "check", `Done` ),
@@ -16,7 +16,7 @@ app.views.edit_dir_order = ( r, data ) => (a,x) => {
             data.entries.map( ( entry, i ) => a.li( [
               f.input( { name: "dir[order][]", value: entry.name, type: "hidden" } ),
               a["p.order-dir-item"]( [
-                app.fa( entry.type === "file" ? "file-o" : "folder", entry.name ),
+                app.fa( entry.entry_type === "file" ? "file-o" : "folder", entry.label ),
                 a.i( entry.description ),
               ] )
             ] ) ),

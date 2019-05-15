@@ -3,7 +3,7 @@ app.views.edit_file = ( r, data ) => (a,x) => {
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( data.key ),
+    a.h4( `Edit ${ data.label }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",
@@ -39,10 +39,10 @@ app.views.edit_file = ( r, data ) => (a,x) => {
       " ",
       f.submit( {
         icon: "fa fa-check",
-        text: `Update ${ data.label }`,
+        text: `Update ${ data.type }`,
         buttonTag: { class: "btn btn-primary" },
       } ),
-      // x.appkit.put( data ),
+      ,
     ], {
       data: data,
       action: `/api/${ data.path }`,

@@ -18,7 +18,7 @@ class Server
         save_dir_data parent_path, parent_data
 
         {
-          type: :destroy_dir,
+          view: :destroy_dir,
           path: "#{ parent_path }/~dir"
         }
 

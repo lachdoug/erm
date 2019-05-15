@@ -8,7 +8,7 @@ app.navbar = (r) => (a,x) => [
     config.title || 'ERM'
   ] ),
   a["div.container.clearfix"]( r.routes( {
-    '%%': app.pills
+    '%%': app.navbar.pills
   } ) ),
   a.hr,
 

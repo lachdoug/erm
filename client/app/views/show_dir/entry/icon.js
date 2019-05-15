@@ -1,6 +1,6 @@
 app.views.show_dir.entry.icon = function( entry ) {
 
-  if ( entry.type === "file" ) {
+  if ( entry.entry_type === "file" ) {
     if ( entry.status === "missing" ) {
       return "exclamation"
     } else if ( entry.status === "unknown" ) {

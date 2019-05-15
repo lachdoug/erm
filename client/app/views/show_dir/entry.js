@@ -6,7 +6,7 @@ app.views.show_dir.entry = function( r, entry ) {
       app.btn(
         app.fa(
           app.views.show_dir.entry.icon( entry ),
-          entry.name
+          entry.label
         ),
         () => r.open( `/${ entry.path }` )
       ),
@@ -19,7 +19,7 @@ app.views.show_dir.entry = function( r, entry ) {
       a[".bad-entry"](
         app.fa(
           app.views.show_dir.entry.icon( entry ),
-          entry.name
+          entry.label
         )
       ),
       a.i( entry.description ),

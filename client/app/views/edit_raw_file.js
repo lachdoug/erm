@@ -17,10 +17,9 @@ app.views.edit_raw_file = ( r, data ) => (a,x) => [
     " ",
     f.submit( {
       icon: "fa fa-check",
-      text: `Update ${ data.label }`,
+      text: `Update ${ data.type }`,
       buttonTag: { class: "btn btn-primary" },
     } ),
-
   ], {
     data: data,
     action: `/api/${ data.path }/raw`,
@@ -30,6 +29,6 @@ app.views.edit_raw_file = ( r, data ) => (a,x) => [
     },
   } ),
 
-  // x.appkit.put( data ),
+  ,
 
 ]

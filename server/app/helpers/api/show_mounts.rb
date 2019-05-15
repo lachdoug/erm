@@ -4,20 +4,17 @@ class Server
 
       def show_mounts( mounts_config )
 
-        # metadata = load_metadata( '' )
-
         entries = mounts_config.map do |root_config|
 
-          name = root_config[:name] || root_config[:key]
+          name = root_config[:name] || root_config[:label].downcase.gsub( ' ', '_' )
 
           description = root_config[:description]
 
           {
             path: "#{ name }/~dir",
-            name: name,
-            type: :dir,
+            entry_type: :dir,
             status: :present,
-            label: root_config[:label],
+            label: root_config[:label] || name,
             description: description,
           }
         end
@@ -25,10 +22,9 @@ class Server
         home_config = config[:home] || {}
 
         {
-          name: '',
-          label: home_config[:label],
+          label: home_config[:label] || "Home",
           description: home_config[:description],
-          type: :show_dir,
+          view: :show_dir,
           collection: false,
           collect: { dirs: false, files: false },
           entries: entries,

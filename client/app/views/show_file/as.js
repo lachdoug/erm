@@ -6,7 +6,7 @@ app.views.show_file.as = ( r, data ) => (a,x) => {
 
     let link = data.link || {}
     let href = link.href
-    let label = link.label || "Open"
+    let label = link.label || "Link"
 
     component.push(
       a.hr,
@@ -14,6 +14,17 @@ app.views.show_file.as = ( r, data ) => (a,x) => {
         app.fa( "external-link", label ),
         { href: href, target: href, class: 'btn btn-link' }
       ),
+      a.hr,
+    )
+
+  } else if ( data.as === "iframe" ) {
+
+    component.push(
+      `/open/${ data.path }`,
+      a.iframe(
+        { src: `/iframe/${ data.path }`, class: "file-open-iframe" }
+      ),
+      a.p("Hi"),
       a.hr,
     )
 

@@ -35,6 +35,11 @@ class Server
 
         raise ApiError.new( "Requires a name.", 422 ) unless name
 
+        if file_config[:labeled]
+          label = name
+          name = name.downcase.gsub( ' ', '_' )
+        end
+
         file_name = "#{ name }#{ file_ext }"
 
         new_file_path = "#{ parent_path }/#{ file_name }"
@@ -88,12 +93,12 @@ class Server
         end
 
         parent_data = load_dir_data parent_path
-        # file_id = entry_file_id entry_path
         file_data = {
           created: created_milliseconds,
           metadata: file_params[:metadata].to_h,
         }
-        file_data[:name] = file_params[:name] unless file_config[:name].is_a? String
+
+        file_data[:label] = label if label
         file_data[:index] = index if index
         file_data[:description] = description if description
 
@@ -101,7 +106,7 @@ class Server
         save_dir_data parent_path, parent_data
 
         {
-          type: :create_file,
+          view: :create_file,
           path: "#{ new_file_path }/~file"
         }
 

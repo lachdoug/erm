@@ -69,6 +69,11 @@ app.css = (a,x) => x.appkit.document.css( [
     ".fullscreen .CodeMirror-scroll": {
       maxHeight: "unset",
     },
+    ".file-open-iframe": {
+      width: "100%",
+      height: "80vh",
+      border: "none",
+    }
   },
   config.css || {}
 ] )

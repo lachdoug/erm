@@ -26,7 +26,6 @@ app.views.bad_entries = ( r, data ) => (a,x) => {
         text: submitText,
         buttonTag: { class: "btn btn-primary" },
       } ),
-      // x.appkit.put( data ),
     ], {
       data: data,
       action: `/api/${ data.path }/${ data.problem }`,

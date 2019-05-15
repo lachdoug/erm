@@ -2,9 +2,9 @@ class Server
   module App
     module Helpers
 
-      def keyify( name )
+      def snakeify( name )
 
-        return name.downcase.gsub( /\s/, '_')
+        return name.downcase.gsub( ' ', '_' )
 
       end
 

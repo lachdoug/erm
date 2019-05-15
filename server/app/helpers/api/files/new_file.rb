@@ -7,14 +7,17 @@ class Server
         file_metadata = file_config[:metadata] || {}
 
         file = {
-          type: :new_file,
+          view: :new_file,
           path: "#{ dir_path }/~dir",
-          label: file_config[:label] || file_config[:key],
+          type: file_config[:type],
           config: {
             metadata: file_metadata[:form],
           }
         }
 
+        # For name:
+        # Hash is passed, as a JS object, to name input on new_dir form.
+        # String is templated.
         if file_config[:name].is_a? Hash
           file[:config][:name] = file_config[:name]
         elsif file_config[:name].is_a? String

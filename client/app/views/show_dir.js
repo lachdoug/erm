@@ -1,7 +1,7 @@
 app.views.show_dir = ( r, data ) => (a,x) => [
 
   a.h4( [
-    data.dirname || data.label || "Home",
+    data.label,
     ' ',
     a.small( a.i( data.description ) ),
   ] ),
@@ -10,7 +10,7 @@ app.views.show_dir = ( r, data ) => (a,x) => [
 
     data.item && data.item.edit ?
     app.btn(
-      app.fa( "tag", data.label ),
+      app.fa( "tag", data.type ),
       () => r.open( `${ r.path }/edit` )
     ) : null,
 
@@ -22,19 +22,19 @@ app.views.show_dir = ( r, data ) => (a,x) => [
 
     data.collect.dirs && data.collect.dirs.new ?
       app.btn(
-        app.fa( "plus-square", `New ${ data.collect.dirs.key }` ),
+        app.fa( "plus-square", `New ${ data.collect.dirs.type }` ),
         () => r.open( `${ r.path }/subdir/new` )
       ) : null,
 
     data.collect.files && data.collect.files.new ?
       app.btn(
-        app.fa( "plus-square-o", `New ${ data.collect.files.key }` ),
+        app.fa( "plus-square-o", `New ${ data.collect.files.type }` ),
         () => r.open( `${ r.path }/file/new` )
       ) : null,
 
     data.item && data.item.delete ?
       app.btn(
-        app.fa( "trash", `Delete ${ data.label }` ),
+        app.fa( "trash", `Delete ${ data.type }` ),
         () => r.open( `${ r.path }/delete` ),
         "link float-right"
       ) : null,
@@ -51,9 +51,6 @@ app.views.show_dir = ( r, data ) => (a,x) => [
   data.entries.map( ( entry, i ) =>
     app.views.show_dir.entry( r, entry )
   ) : a.i("No entries"),
-
-  // x.appkit.put( data ),
-  // x.appkit.put( r ),
 
   data.created ? [
     a.hr,

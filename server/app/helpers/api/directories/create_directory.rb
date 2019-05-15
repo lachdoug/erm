@@ -3,7 +3,7 @@ class Server
     module Helpers
 
       def create_directory( parent_path, dir_config, dir_params )
-# debugger
+
         dir_params ||= {}
 
         created = Time.now
@@ -12,7 +12,6 @@ class Server
         if dir_config[:index]
           index = increment_index parent_path
         end
-
 
         if dir_config[:name].is_a? String
           name_template_params = {
@@ -33,8 +32,12 @@ class Server
           name = dir_params[:name]
         end
 
-# debugger
         raise ApiError.new( "Requires a name.", 422 ) unless name
+
+        if dir_config[:labeled]
+          label = name
+          name = name.downcase.gsub( ' ', '_' )
+        end
 
         dir_path = "#{ parent_path }/#{ name }"
         entry_path = "#{ Server.fs_dir }/#{ dir_path }"
@@ -43,14 +46,13 @@ class Server
         apply_dir_permissions entry_path
         build_dirs_entries dir_path, dir_config
 
-        # path = URI.encode( "#{ entry_path }/~dir" )
-
         dir_id = entry_id entry_path
 
         if dir_config[:description]
           fs_path = dir_path.sub( /^[^\/]+\//, '' )
           description_template_params = {
             name: name,
+            label: label,
             path: dir_path,
             fs_path: dir_path.sub( /^[^\/]+\//, '' ),
             inode: dir_id,
@@ -67,19 +69,18 @@ class Server
         end
 
         parent_data = load_dir_data parent_path
-        # id = entry_id entry_path
         dir_data = {
           created: created_milliseconds,
           metadata: dir_params[:metadata].to_h,
         }
-        dir_data[:name] = dir_params[:name] unless dir_config[:name].is_a? String
         dir_data[:index] = index if index
+        dir_data[:label] = label if label
         dir_data[:description] = description if description
         parent_data[ name ] = dir_data
         save_dir_data parent_path, parent_data
 
         {
-          type: :create_dir,
+          view: :create_dir,
           path: "#{ dir_path }/~dir"
         }
 

@@ -4,7 +4,7 @@ class Server
 
       def list_directory( dir_path, options={} )
 
-        Dir.glob( "#{ dir_path }/*" ).
+        list_directory_entries( dir_path ).
           map { |entry|
             if File.file?( entry )
               if options[:index_files]
@@ -26,7 +26,6 @@ class Server
           }.
           sort_by { |entry| [ entry[0], entry[1] ] }.
           map { |entry| entry[2] }.
-          select { |entry| File.directory?( entry ) || File.file?( entry ) }.
           map { |entry|  block_given? ? yield(entry) : entry }
 
       end

@@ -1,7 +1,7 @@
 app.views.delete_file = ( r, data ) => (a,x) => [
   a.h4( `Delete ${ data.label }` ),
   a.p( [
-    "Are you sure that you want to delete",
+    "Are you sure that you want to delete the file",
     a.strong( data.filename ), "?"
   ] ),
   x.appkit.form( (f) => [
@@ -14,10 +14,9 @@ app.views.delete_file = ( r, data ) => (a,x) => [
     " ",
     f.submit( {
       icon: "fa fa-check",
-      text: `Delete ${ data.label }`,
+      text: `Delete ${ data.type }`,
       buttonTag: { class: "btn btn-primary" },
     } ),
-    // x.appkit.put( data ),
   ], {
     method: 'DELETE',
     action: `/api/${ data.path }`,

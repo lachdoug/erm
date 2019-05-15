@@ -15,7 +15,7 @@ class Server
 
         if file_data[:created]
           created = Time.at(
-            file_data[:created] / 1000 ).strftime("%F %T")
+            file_data[:created].to_i / 1000 ).strftime("%F %T")
         else
           created = ''
         end
@@ -43,6 +43,11 @@ class Server
         end
 
         raise ApiError.new( "Requires a name.", 422 ) unless new_name
+
+        if file_config[:labeled]
+          label = new_name
+          new_name = new_name.downcase.gsub( ' ', '_' )
+        end
 
         if file_config[:ext]
           new_file_name = "#{ new_name }.#{ file_config[:ext] }"
@@ -100,7 +105,7 @@ class Server
 
         parent_data = load_dir_data( parent_path ) || {}
         file_data = parent_data[ name ] || {}
-        file_data[:name] = file_params[:name] unless file_config[:name].is_a? String
+        file_data[:label] = label if label
         file_data[:metadata] = file_params[:metadata].to_h
         file_data[:description] = description if description
         parent_data.delete name
@@ -108,7 +113,7 @@ class Server
         save_dir_data parent_path, parent_data
 
         {
-          type: :update_file,
+          view: :update_file,
           path: "#{ new_file_path }/~file"
         }
 

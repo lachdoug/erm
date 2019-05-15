@@ -1,7 +1,7 @@
 app.views.show_file = ( r, data ) => (a,x) => [
 
   a.h4( [
-    data.filename,
+    data.label,
     ' ',
     a.small( a.i( data.description ) ),
   ] ),
@@ -9,7 +9,7 @@ app.views.show_file = ( r, data ) => (a,x) => [
   a.p( [
 
     data.item && data.item.edit ? app.btn(
-      app.fa( "tag", data.label ),
+      app.fa( "tag", data.type ),
       () => r.open( `${ r.path }/edit` )
     ) : null,
 
@@ -24,7 +24,7 @@ app.views.show_file = ( r, data ) => (a,x) => [
     ) : null,
 
     data.item && data.item.delete ? app.btn(
-      app.fa( "trash", `Delete ${ data.label }` ),
+      app.fa( "trash", `Delete ${ data.type }` ),
       () => r.open( `${ r.path }/delete` ),
       "link float-right",
     ) : null,
@@ -46,7 +46,5 @@ app.views.show_file = ( r, data ) => (a,x) => [
       [ "Creation date unknown" ],
     [ "Modified", x.timeago( data.modified ) ],
   ] ) ),
-
-  // x.appkit.put( data ),
 
 ]

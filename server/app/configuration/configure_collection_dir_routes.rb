@@ -16,7 +16,14 @@ class Server
           create_directory dir_path, dir_config, params[:dir]
         end
 
-        subdir_route = "#{ collection_route }/:#{ dir_config[:key].downcase.gsub ' ', '_' }"
+        # if dir_config[:key] === '*'
+        #
+        #   configure_user_dir_routes scope, dir_config
+        #
+        # else
+        #
+        # end
+        subdir_route = "#{ collection_route }/:#{ dir_config[:key] || dir_config[:type].downcase.gsub( ' ', '_' ) }"
 
         post "#{ subdir_route }/~dir/?" do
           dir_path = path_for request, '/~dir'
@@ -64,6 +71,9 @@ class Server
         end
 
         configure_dir_routes subdir_route, dir_config
+
+
+
 
       end
 

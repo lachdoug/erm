@@ -1,8 +1,8 @@
 app.views.delete_dir = ( r, data ) => (a,x) => [
   a.h4( `Delete ${ data.label }` ),
   a.p( [
-    "Are you sure that you want to delete",
-    a.strong( data.dirname ), "?"
+    "Are you sure that you want to delete the directory ",
+    a.strong( data.dirname ), " and all its contents?"
   ] ),
   x.appkit.form( (f) => [
     f.button( {
@@ -14,10 +14,9 @@ app.views.delete_dir = ( r, data ) => (a,x) => [
     " ",
     f.submit( {
       icon: "fa fa-check",
-      text: `Delete ${ data.key }`,
+      text: `Delete ${ data.type }`,
       buttonTag: { class: "btn btn-primary" },
     } ),
-    // x.appkit.put( data ),
   ], {
     method: 'DELETE',
     action: `/api/${ data.path }`,

@@ -10,7 +10,7 @@ class Server
 
         contents = read_file entry_path
 
-        entry[:type] = :edit_raw_file
+        entry[:view] = :edit_raw_file
         entry[:contents] = contents
 
         entry[:mode] = mode_map( file_config[:mode] || file_config[:serialize] || file_config[:ext] || file_config[:as] )

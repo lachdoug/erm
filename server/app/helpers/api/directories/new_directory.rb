@@ -7,14 +7,11 @@ class Server
         metadata_config = dir_config[:metadata] || {}
 
         dir = {
-          type: :new_dir,
+          view: :new_dir,
           path: "#{ dir_path }/~dir",
-          label: dir_config[:label] || dir_config[:key],
+          type: dir_config[:type],
           config: {
-            # key: dir_config[:key],
             index: dir_config[:index],
-            # name: dir_config[:name],
-            # description: dir_config[:description],
             metadata: metadata_config[:form],
           },
         }

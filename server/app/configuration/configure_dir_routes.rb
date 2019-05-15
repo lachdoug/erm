@@ -4,6 +4,8 @@ class Server
 
       def configure_dir_routes( scope, dir_config )
 
+        # debugger if scope === "/api/Clients/:client/Projects/:project/Data"
+
         get "#{ scope }/~dir/order/edit/?" do
           dir_path = path_for request, '/~dir/order/edit'
           edit_directory_order dir_path, dir_config
@@ -20,8 +22,6 @@ class Server
           end
         elsif dir_config[:dirs].is_a? Hash
           configure_collection_dir_routes scope, dir_config[:dirs]
-        elsif dir_config[:dirs]
-          # debugger
         end
 
         if dir_config[:files].is_a? Array
@@ -30,10 +30,8 @@ class Server
           end
         elsif dir_config[:files].is_a? Hash
           configure_collection_file_routes scope, dir_config[:files]
-        elsif dir_config[:files]
-          # debugger
         end
-
+        
       end
 
     end

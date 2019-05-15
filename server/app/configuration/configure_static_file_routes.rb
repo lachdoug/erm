@@ -4,7 +4,8 @@ class Server
 
       def configure_static_file_routes( scope, file_config )
 
-        route = "#{ scope }/#{ file_config[:name] }#{ file_config[:ext] ? ".#{ file_config[:ext] }" : '' }"
+        name = file_config[:name] || file_config[:label].downcase.gsub( ' ', '_' )
+        route = "#{ scope }/#{ name }#{ file_config[:ext] ? ".#{ file_config[:ext] }" : '' }"
 
         get "#{ route }/~file/?" do
           file_path = path_for request, "/~file"

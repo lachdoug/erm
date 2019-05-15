@@ -10,7 +10,7 @@ class Server
 
         content = read_file entry_path
 
-        entry[:type] = :raw_file
+        entry[:view] = :raw_file
         entry[:content] = content
 
         entry

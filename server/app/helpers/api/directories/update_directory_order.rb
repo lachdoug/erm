@@ -17,7 +17,7 @@ class Server
         save_dir_data dir_path, dir_data
 
         {
-          type: :update_dir_order,
+          view: :update_dir_order,
           path: "#{ dir_path }/~dir"
         }
 

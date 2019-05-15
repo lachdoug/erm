@@ -3,7 +3,7 @@ app.views.new_file = ( r, data ) => (a,x) => {
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( `New ${ data.label }` ),
+    a.h4( `New ${ data.type }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",
@@ -40,10 +40,10 @@ app.views.new_file = ( r, data ) => (a,x) => {
       " ",
       f.submit( {
         icon: "fa fa-check",
-        text: `Create ${ data.label }`,
+        text: `Create ${ data.type }`,
         buttonTag: { class: "btn btn-primary" },
       } ),
-      // x.appkit.put( data ),
+
     ], {
       action: `/api/${ data.path }/file`,
       scope: "file",

@@ -5,14 +5,12 @@ class Server
       def update_directory( dir_path, dir_config, dir_params )
 
         dir_params ||= {}
+        name = File.basename dir_path
 
         parent_path = parent_path_for dir_path
         parent_data = load_dir_data parent_path
-        # dir_id = entry_id "#{ Server.fs_dir }/#{ dir_path }"
-        name = File.basename dir_path
         dir_data = parent_data[ name ] || {}
-
-        created = Time.at( dir_data[:created] / 1000 )
+        created = Time.at( dir_data[:created].to_i / 1000 )
 
         if dir_config[:name].is_a? String
           name_template_params = {
@@ -35,6 +33,11 @@ class Server
         end
 
         raise ApiError.new( "Requires a name.", 422 ) unless new_name
+
+        if dir_config[:labeled]
+          label = new_name
+          new_name = new_name.downcase.gsub( ' ', '_' )
+        end
 
         new_dir_path = "#{ parent_path }/#{ new_name }"
         new_entry_path = "#{ Server.fs_dir }/#{ new_dir_path }"
@@ -62,15 +65,15 @@ class Server
 
         parent_data = load_dir_data parent_path
         dir_data = parent_data[ name ] || {}
-        dir_data[:name] = dir_params[:name] unless dir_config[:name].is_a? String
         dir_data[:metadata] = dir_params[:metadata].to_h
+        dir_data[:label] = label if label
         dir_data[:description] = description if description
         parent_data.delete name
         parent_data[ new_name ] = dir_data
         save_dir_data parent_path, parent_data
 
         {
-          type: :update_dir,
+          view: :update_dir,
           path: "#{ new_dir_path }/~dir",
         }
 
@@ -84,46 +87,3 @@ class Server
     end
   end
 end
-
-#
-# dir_params ||= {}
-#
-# now = Time.now
-# now_milliseconds = now.to_f * 1000
-#
-# template_params = {
-#   created: now.strftime("%F %T")
-# }.merge( dir_params[:metadata] || {} )
-#
-# if dir_config[:index]
-#   index = increment_index dir_path
-#   template_params[:index] = index
-# end
-#
-# name = process_template dir_config[:name], template_params
-#
-# raise ApiError.new( "Requires a name.", 422 ) unless name
-#
-# new_dir_path = "#{ dir_path }/#{ name }"
-# entry_path = "#{ Server.fs_dir }/#{ new_dir_path }"
-# make_directory entry_path
-# build_dirs_entries new_dir_path, dir_config
-#
-# metadata = load_metadata dir_path
-# dir_id = entry_id entry_path
-# metadata[ dir_id ] ||= {}
-# metadata[ dir_id ][:created] = now_milliseconds
-# metadata[ dir_id ][:metadata] = dir_params[:metadata]
-# metadata[ dir_id ][:index] = index if index
-# save_metadata dir_path, metadata
-#
-# {
-#   type: :create_dir,
-#   path: URI.encode( "#{ new_dir_path }/~dir" )
-# }
-#
-# rescue Errno::EEXIST
-#
-# raise ApiError.new( "#{ name } already exists.", 409 )
-#
-# end

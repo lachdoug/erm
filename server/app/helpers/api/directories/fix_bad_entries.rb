@@ -11,7 +11,7 @@ class Server
         end
 
         {
-          type: :fix_bad_entries,
+          view: :fix_bad_entries,
           problem: problem,
           path: "#{ dir_path }/~dir",
         }

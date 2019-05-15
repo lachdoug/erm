@@ -8,7 +8,8 @@ class Server
 
         if dir_config[:dirs].is_a? Array
           dir_config[:dirs].each do |subdir_config|
-            dir_path = "#{ dir }/#{ subdir_config[:name] }"
+            name = subdir_config[:name] || subdir_config[:label].downcase.gsub( ' ', '_' )
+            dir_path = "#{ dir }/#{ name }"
             entry_path = "#{ Server.fs_dir }/#{ dir_path }"
             touch_directory entry_path
             apply_dir_permissions entry_path
@@ -18,7 +19,8 @@ class Server
 
         if dir_config[:files].is_a? Array
           dir_config[:files].each do |file_config|
-            file_path = "#{ dir }/#{ file_config[:name] }#{
+            name = file_config[:name] || file_config[:label].downcase.gsub( ' ', '_' )
+            file_path = "#{ dir }/#{ name }#{
               file_config[:ext] ? ".#{ file_config[:ext] }" : '' }"
             entry_path = "#{ Server.fs_dir }/#{ file_path }"
             touch_file entry_path

@@ -4,7 +4,8 @@ class Server
 
       def configure_static_dir_routes( scope, dir_config )
 
-        route = "#{ scope }/#{ dir_config[:name] }"
+        name = dir_config[:name] || dir_config[:label].downcase.gsub( ' ', '_' )
+        route = "#{ scope }/#{ name }"
 
         get "#{ route }/~dir/?" do
           dir_path = path_for request, "/~dir"

@@ -6,7 +6,7 @@ class Server
 
         if dir_config[:dirs].is_a?( Hash )
           collect_dirs = {
-            key: dir_config[:dirs][:key],
+            type: dir_config[:dirs][:type] || dir_config[:dirs][:key],
             new: dir_config[:dirs][:new] != false
           }
         else
@@ -15,7 +15,7 @@ class Server
 
         if dir_config[:files].is_a?( Hash )
           collect_files = {
-            key: dir_config[:files][:key],
+            type: dir_config[:files][:type] || dir_config[:files][:key],
             new: dir_config[:files][:new] != false
           }
         else
@@ -23,35 +23,32 @@ class Server
         end
 
         entries = directory_entries dir_path, dir_config
-
         parent_path = parent_path_for dir_path
-
         parent_data = load_dir_data parent_path
-        # dir_id = entry_id "#{ Server.fs_dir }/#{ dir_path }"
-
         name = File.basename dir_path
-
         path = "#{ dir_path }/~dir"
         fs_path = dir_path.sub( /^[^\/]+\//, '' )
 
-        if behavior === :static
-          description = dir_config[:description]
-        else
+        if behavior === :collection
           dir_data = parent_data[ name ] || {}
+          label = dir_data[:label] || name
+          type = dir_config[:type]
           description = dir_data[:description]
+        else
+          label = dir_config[:label] || dir_config[:name]
+          description = dir_config[:description]
         end
-# debugger
+
         dir = {
           path: path,
           dirname: name,
+          label: label,
           collect: { dirs: collect_dirs, files: collect_files },
-          type: :show_dir,
+          type: type,
+          view: :show_dir,
           entries: entries,
-          # dir_id: dir_id,
           description: description,
-          # key: ,
           order: dir_config[:order],
-          # config: dir_config,
         }
 
         if behavior === :collection
@@ -68,7 +65,6 @@ class Server
             edit: editable,
             delete: ( dir_config[:delete] != false ),
           }
-          dir[:label] = dir_config[:label] || dir_config[:key]
 
           metadata_config = dir_config[:metadata] || {}
           if metadata_config[:show]
@@ -79,9 +75,6 @@ class Server
           end
 
           dir[:created] = dir_data[:created]
-
-        else
-          dir[:label] = dir_config[:name] # dir_config[:label] || dir_config[:name]
         end
 
         dir

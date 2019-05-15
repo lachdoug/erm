@@ -10,11 +10,11 @@ class Server
         entries = entries.select do |entry|
           entry[:status] === problem
         end.map do |entry|
-          entry[:name]
+          entry[:label]
         end
 
         {
-          type: :bad_entries,
+          view: :bad_entries,
           path: "#{ dir_path }/~dir",
           dirname: dirname,
           entries: entries,

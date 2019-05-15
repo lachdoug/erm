@@ -3,7 +3,7 @@ app.views.new_dir = ( r, data ) => (a,x) => {
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( `New ${ data.label }` ),
+    a.h4( `New ${ data.type }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",
@@ -22,7 +22,6 @@ app.views.new_dir = ( r, data ) => (a,x) => {
                   input: { class: "form-control", ...field.input },
                   select: { class: "form-control", ...field.select },
                   textarea: { class: "form-control", ...field.textarea },
-                  // input: { class: "form-control" },
                 }
               } else {
                 return component.tag
@@ -40,7 +39,7 @@ app.views.new_dir = ( r, data ) => (a,x) => {
       " ",
       f.submit( {
         icon: "fa fa-check",
-        text: `Create ${ data.label }`,
+        text: `Create ${ data.type }`,
         buttonTag: { class: "btn btn-primary" },
       } ),
     ], {
@@ -51,7 +50,6 @@ app.views.new_dir = ( r, data ) => (a,x) => {
       },
     } ),
 
-    // x.appkit.put( data ),
   ]
 
 }

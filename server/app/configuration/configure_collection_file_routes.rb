@@ -16,7 +16,7 @@ class Server
           create_file dir_path, file_config, params[:file]
         end
 
-        item_route = "#{ scope }/:#{ file_config[:key].downcase.gsub ' ', '_' }"
+        item_route = "#{ scope }/:#{ file_config[:key] || file_config[:type].downcase.gsub( ' ', '_' ) }"
 
         get "#{ item_route }/~file/raw/?" do
           file_path = path_for request, '/~file/raw'

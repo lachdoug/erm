@@ -13,7 +13,7 @@ class Server < Sinatra::Base
       env_template_params: YAML.load( ENV['ERM_TEMPLATE_PARAMS_YAML'] || '' ) || {},
       fs_dir: ENV['ERM_FS_DIR'] ||
         ( Sinatra::Base.development? ? "volumes" : "home/fs" )
-# debugger
+
   FileUtils.cp_r "data/config/.", "config"
   FileUtils.cp_r "data/public/.", "public"
 
@@ -25,7 +25,6 @@ class Server < Sinatra::Base
     if request.path_info.match /^\/api\/?/
       content_type :json
       body = request.body.read
-      # debugger
       params.merge!( JSON.parse( body ) ) unless body.empty?
     end
   end
@@ -48,11 +47,11 @@ class Server < Sinatra::Base
   end
 
   not_found do
-    # Return index.html unless api call
+    # Return index.html on all GETs, unless api/ or iframe/ call
     pass if request.path_info.match /^\/vendor\/?|^\/assets\//
-    if request.path_info.match /^\/api\/?/
+    if request.path_info.match /^\/api\/?|^\/iframe\/?/
       content_type :text
-      "Serve route not found."
+      "Server route not found."
     else
       pass unless request.request_method === "GET"
       status 200
@@ -68,10 +67,7 @@ class Server < Sinatra::Base
 
   error do |e|
     content_type :text
-    # debugger
     "Server error ( #{ e.backtrace[0].split('/').last } #{ e.to_s } )."
   end
-
-
 
 end
