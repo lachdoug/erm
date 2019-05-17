@@ -8,7 +8,7 @@ class Server
           true
         elsif File.exist? to
           name = File.basename to
-          raise ApiError.new( "#{ name } already exists.", 409 )
+          raise Error.new( "#{ name } already exists.", 409 )
         else
           FileUtils.move from, to
         end

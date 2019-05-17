@@ -4,7 +4,8 @@ let app = function(a,x) { return [
     app.navbar(r),
     a["div.container"](
       r.routes( {
-        '%%': app.views
+        '/sign_in': app.views.sign_in,
+        '/volumes/**': app.views
       }, {
         transition: x.appkit.transition.fade(
           x.appkit.loading, { time: 200 } ),

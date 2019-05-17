@@ -24,7 +24,7 @@ class Server
       rescue Errno::ENOENT
 
         name = dir_path.match( /([^\/]+)$/ )
-        raise ApiError.new( "#{ name } does not exist.", 404 )
+        raise Error.new( "#{ name } does not exist.", 404 )
 
       end
 

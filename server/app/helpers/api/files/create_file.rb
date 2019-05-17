@@ -33,7 +33,7 @@ class Server
           name = file_params[:name]
         end
 
-        raise ApiError.new( "Requires a name.", 422 ) unless name
+        raise Error.new( "Requires a name.", 422 ) unless name
 
         if file_config[:labeled]
           label = name
@@ -44,7 +44,7 @@ class Server
 
         new_file_path = "#{ parent_path }/#{ file_name }"
 
-        entry_path = "#{ Server.fs_dir }/#{ new_file_path }"
+        entry_path = new_file_path
 
         if file_config[:seed] || file_config[:content]
           content_template_params = {
@@ -112,7 +112,7 @@ class Server
 
       rescue Errno::EEXIST
 
-        raise ApiError.new( "#{ name } already exists.", 409 )
+        raise Error.new( "#{ name } already exists.", 409 )
 
       end
 

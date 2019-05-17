@@ -264,7 +264,7 @@ ax.extension.appkit.form = function( component, options={} ) {
 
         let errorDefault = function( error, el, request ) {
           let errorDisplay = el.$("^appkit-form-wrapper appkit-form-error")
-          errorDisplay.$text( request.responseText )
+          errorDisplay.$nodes( request.responseText )
           errorDisplay.scrollIntoView()
           return true
         }
@@ -326,13 +326,13 @@ ax.extension.appkit.form = function( component, options={} ) {
       }
     },
     $disable: function() {
-      this.$$('appkit-form-field input,textarea,select').$disable()
+      this.$$('appkit-form-field-input > *').$disable()
       this.$$('appkit-form-button button').$disable()
       this.$$('appkit-form-submit button').$disable()
     },
     $enable: function() {
       if ( !options.disabled ) {
-        this.$$('appkit-form-field input,textarea,select').$enable()
+        this.$$('appkit-form-field-input > *').$enable()
         this.$$('appkit-form-button button').$enable()
         this.$$('appkit-form-submit button').$enable()
       }
@@ -636,13 +636,18 @@ http = function( url, options={} ) {
 
   let request = new XMLHttpRequest()
 
-  let resolver = options.resolver || function( element, promise ) {
-    promise.then( function( data ) {
-      success.bind(element)( data, element, request )
-    } ).catch( function( err ) {
-      // debugger
-      error.bind(element)( err, element, request )
-    } )
+  let resolver
+  if ( options.resolver ) {
+    resolver = options.resolver( request )
+  } else {
+    resolver = function( element, promise ) {
+      promise.then( function( data ) {
+
+        success.bind( element )( data, element, request )
+      } ).catch( function( err ) {
+        error.bind( element )( err, element, request )
+      } )
+    }
   }
 
 	let promise = new Promise(function (resolve, reject) {
@@ -660,7 +665,6 @@ http = function( url, options={} ) {
         } else {
           reject( new Error( request.responseText ) )
         }
-        // let message = `${ request.status }: ${ request.statusText }`
 			}
 		}
 
@@ -4566,13 +4570,24 @@ password = (f) => function( options={} ) {
     }
   }
 
+  let placeholder_primary
+  let placeholder_secondary
+
+  if ( ax.type.is.array( options.placeholder ) ) {
+    placeholder_primary = options.placeholder[0]
+    placeholder_secondary = options.placeholder[1]
+  } else {
+    placeholder_primary = options.placeholder
+    placeholder_secondary = "Confirm password"
+  }
+
   let component = [
     a["appkit-form-textsecurity-password-input"](
       f.input( {
         name: options.name,
         value: options.value,
         autocomplete: "off",
-        // placeholder: options.placeholder,
+        placeholder: placeholder_primary,
         readonly: options.readonly,
         required: options.required,
         inputTag: {
@@ -4588,7 +4603,7 @@ password = (f) => function( options={} ) {
       f.input( {
         value: options.value,
         autocomplete: "off",
-        // placeholder: "Confirm password",
+        placeholder: placeholder_secondary,
         readonly: options.readonly,
         required: options.required,
         inputTag: {
@@ -5218,6 +5233,7 @@ ax.extension.appkit.form.factory.country.collection = {
 ax.extension.appkit.document.css["appkit-form-textsecurity-password"](
   {
     display: 'inline-block',
+    width: "100%",
     verticalAlign: "top",
     '>*': {
       display: "block",

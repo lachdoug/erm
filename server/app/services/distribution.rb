@@ -1,6 +1,6 @@
 class Server
   module App
-    module Models
+    module Services
       class Distribution
 
         require 'uglifier'

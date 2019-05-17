@@ -6,7 +6,7 @@ app.views.bad_entries = ( r, data ) => (a,x) => {
   let submitText = data.problem === "missing" ? "Create entries?" : "Delete entries?"
 
   return [
-    a.h4( data.dirname ),
+    a.h3( data.dirname ),
     message,
     a.ul(
       entries.map( function( entry ) {

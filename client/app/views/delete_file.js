@@ -1,5 +1,5 @@
 app.views.delete_file = ( r, data ) => (a,x) => [
-  a.h4( `Delete ${ data.label }` ),
+  a.h3( `Delete ${ data.label }` ),
   a.p( [
     "Are you sure that you want to delete the file",
     a.strong( data.filename ), "?"

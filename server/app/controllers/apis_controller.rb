@@ -2,7 +2,7 @@ class Server
   module App
     module Controllers
 
-      get [ "/api/?", "/api/~dir/?" ] do
+      get "/api/volumes/~dir/?" do
         show_mounts config[:mount] || []
       end
 

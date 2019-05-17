@@ -1,7 +1,7 @@
 app.views.edit_raw_file = ( r, data ) => (a,x) => [
 
-  a.h4( [
-    data.filename,
+  a.h3( [
+    data.label,
     ' ',
     a.small( a.i( data.description ) ),
   ] ),
@@ -28,7 +28,5 @@ app.views.edit_raw_file = ( r, data ) => (a,x) => [
       r.open( `/${ data.path }` )
     },
   } ),
-
-  ,
 
 ]

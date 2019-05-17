@@ -5,7 +5,8 @@ let app = function(a,x) { return [
     app.navbar(r),
     a["div.container"](
       r.routes( {
-        '%%': app.views
+        '/sign_in': app.views.sign_in,
+        '/volumes/**': app.views
       }, {
         transition: x.appkit.transition.fade(
           x.appkit.loading, { time: 200 } ),
@@ -142,7 +143,7 @@ app.views.edit_file = ( r, data ) => (a,x) => {
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( `Edit ${ data.label }` ),
+    a.h3( `Edit ${ data.label }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",
@@ -199,7 +200,7 @@ app.views.edit_dir = ( r, data ) => (a,x) => {
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( `Edit ${ data.label }` ),
+    a.h3( `Edit ${ data.label }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",
@@ -256,23 +257,47 @@ app.views.edit_dir = ( r, data ) => (a,x) => {
 app.views.renderer = ( r, data ) => (a,x) => {
 
   return a["app-view"]( [
-    app.views.error( r, data ),
+    // app.views.error( r, data ),
+    app.views.sign_out(r),
     app.views[ data.view ]( r, data )
   ] )
 
 }
 
-app.views.resolver = (r) => ( el, dataPromise ) => [
+app.views.sign_out = (r) => (a,x) => a["app-sign-out"](
+  app.btn(
+    app.fa( "sign-out", "Sign out" ),
+    ( e, el ) => el.$('^').$nodes( x.appkit.http(
+      `/api/session`,
+      {
+        method: "DELETE",
+        success: () => {
+          app.views.sign_in.redirect = r.path
+          r.open( "/sign_in" )
+        },
+      }
+    ) ),
+  ),
+  { class: "pull-right" }
+)
+
+app.views.resolver = (r) => ( request ) => ( el, dataPromise ) => [
   dataPromise.then( ( data ) => {
     el.$nodes = () => app.views.renderer( r, data )
-  } ).catch( ( err ) => {
+  } ).catch( ( err, aaa, bbb ) => {
     ax.log( err )
-    el.$nodes = [ (a,x) => x.appkit.put( err.message ) ]
+    el.$nodes = [
+      (a,x) => x.appkit.put( err.message ),
+      request.status === 401 ? app.btn(
+        app.fa( "sign-in", "Sign in" ),
+        () => r.open( `/sign_in` )
+      ) : null
+    ]
   } )
 ]
 
 app.views.delete_dir = ( r, data ) => (a,x) => [
-  a.h4( `Delete ${ data.label }` ),
+  a.h3( `Delete ${ data.label }` ),
   a.p( [
     "Are you sure that you want to delete the directory ",
     a.strong( data.dirname ), " and all its contents?"
@@ -304,7 +329,7 @@ app.views.new_file = ( r, data ) => (a,x) => {
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( `New ${ data.type }` ),
+    a.h3( `New ${ data.type }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",
@@ -356,18 +381,19 @@ app.views.new_file = ( r, data ) => (a,x) => {
 
 }
 
-app.views.error = function( r, data ) {
-
-  return (a,x) => a["app-view-error"]( {
-    $show: function( err ) {
-      this.$nodes( a.p( err, { class: "alert alert-warning" } ) )
-    }
-  } )
-
-}
+// app.views.error = function( r, data ) {
+//
+//   return (a,x) => a["app-view-error"]( {
+//     $show: function( err, request ) {
+//       debugger
+//       this.$nodes( a.p( err, { class: "alert alert-warning" } ) )
+//     }
+//   } )
+//
+// }
 
 app.views.delete_file = ( r, data ) => (a,x) => [
-  a.h4( `Delete ${ data.label }` ),
+  a.h3( `Delete ${ data.label }` ),
   a.p( [
     "Are you sure that you want to delete the file",
     a.strong( data.filename ), "?"
@@ -399,7 +425,7 @@ app.views.new_dir = ( r, data ) => (a,x) => {
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( `New ${ data.type }` ),
+    a.h3( `New ${ data.type }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",
@@ -453,7 +479,7 @@ app.views.new_dir = ( r, data ) => (a,x) => {
 app.views.edit_dir_order = ( r, data ) => (a,x) => {
 
   return [
-    a.h4( `Order ${ data.label }` ),
+    a.h3( `Order ${ data.label }` ),
     a.p( [
       app.btn(
         app.fa( "check", `Done` ),
@@ -492,9 +518,39 @@ app.views.edit_dir_order = ( r, data ) => (a,x) => {
 
 }
 
+app.views.sign_in = (r) => (a,x) => a["app-sign-in"]( [
+
+  a.h3( "Authentication" ),
+
+  x.appkit.form( (f) => [
+    f.fields( {
+      key: "token",
+      type: "password",
+      label: false,
+      placeholder: "Token",
+      input: {
+        class: "form-control",
+      },
+      confirm: false,
+    } ),
+    f.submit( {
+      icon: "fa fa-sign-in",
+      text: `Sign in`,
+      buttonTag: { class: "btn btn-primary" },
+    } ),
+  ], {
+    action: `/api/session`,
+    success: function( data, el ) {
+      r.open( app.views.sign_in.redirect )
+      return true
+    },
+  } ),
+
+] )
+
 app.views.show_dir = ( r, data ) => (a,x) => [
 
-  a.h4( [
+  a.h3( [
     data.label,
     ' ',
     a.small( a.i( data.description ) ),
@@ -557,7 +613,7 @@ app.views.show_dir = ( r, data ) => (a,x) => [
 
 app.views.raw_file = ( r, data ) => (a,x) => [
 
-  a.h4( [
+  a.h3( [
     data.filename,
     ' ',
     a.small( a.i( data.description ) ),
@@ -584,8 +640,8 @@ app.views.raw_file = ( r, data ) => (a,x) => [
 
 app.views.edit_raw_file = ( r, data ) => (a,x) => [
 
-  a.h4( [
-    data.filename,
+  a.h3( [
+    data.label,
     ' ',
     a.small( a.i( data.description ) ),
   ] ),
@@ -613,8 +669,6 @@ app.views.edit_raw_file = ( r, data ) => (a,x) => [
     },
   } ),
 
-  ,
-
 ]
 
 app.views.bad_entries = ( r, data ) => (a,x) => {
@@ -625,7 +679,7 @@ app.views.bad_entries = ( r, data ) => (a,x) => {
   let submitText = data.problem === "missing" ? "Create entries?" : "Delete entries?"
 
   return [
-    a.h4( data.dirname ),
+    a.h3( data.dirname ),
     message,
     a.ul(
       entries.map( function( entry ) {
@@ -659,7 +713,7 @@ app.views.bad_entries = ( r, data ) => (a,x) => {
 
 app.views.show_file = ( r, data ) => (a,x) => [
 
-  a.h4( [
+  a.h3( [
     data.label,
     ' ',
     a.small( a.i( data.description ) ),
@@ -710,8 +764,8 @@ app.views.show_file = ( r, data ) => (a,x) => [
 
 app.navbar.pills = (r) => (a,x) => {
 
-  let location = r.path
-  if ( location === '/~dir' ) location = '/'
+  let location = r.path.replace( /^\/volumes/, '')
+  // if ( location === '/~dir' ) location = '/'
   let path_match = location.match( /^((.*)\/~(dir|subdir|file))(.*)$/ )
 
   let base_path
@@ -743,33 +797,33 @@ app.navbar.pills = (r) => (a,x) => {
     let path = `${ scope }${ segment }`
     let component
 
+    // debugger
     if ( i === 0 && i === last_i ) {
-
-      if ( base_path === location ) {
-        component = a['.pill-selected']( app.fa( "home" ) )
-      } else {
-        component = app.btn( app.fa( 'home' ), ()=> r.open( `/` ) )
-      }
+// component = app.btn( app.fa( 'home' ), ()=> r.open( `/volumes/~dir` ) )
+  component = a['.pill-selected']( app.fa( "home" ) )
+      // if ( base_path === location ) {
+      // } else {
+      // }
     } else if ( i === 0 ) {
-      component = app.btn( app.fa( 'home' ), ()=> r.open( `/` ) )
+      component = app.btn( app.fa( 'home' ), ()=> r.open( `/volumes/~dir` ) )
     } else if ( i === last_i ) {
       let fa = entry_type === "dir" ? "folder" : "file-o"
       if ( action ) {
         component = app.btn(
           app.fa( fa, decodeURIComponent( segment ) ),
-          ()=> r.open( `${ path }/~${ entry_type }` )
+          ()=> r.open( `/volumes${ path }/~${ entry_type }` )
         )
-        up_path = `${ path }/~${ entry_type }`
+        up_path = `/volumes${ path }/~${ entry_type }`
       } else {
         component = a['.pill-selected']( app.fa(
           fa, decodeURIComponent( segment )
         ) )
-        up_path = `${ scope }~dir`
+        up_path = `/volumes${ scope }~dir`
       }
     } else {
       component = app.btn(
         app.fa( 'folder', decodeURIComponent( segment ) ),
-        ()=> r.open( `${ path }/~dir` )
+        ()=> r.open( `/volumes${ path }/~dir` )
       )
     }
 
@@ -791,6 +845,8 @@ app.navbar.pills = (r) => (a,x) => {
   return a["p.pills"]( component )
 
 }
+
+app.views.sign_in.redirect = '/volumes/~dir'
 
 app.views.show_dir.fixes = function( r, data ) {
 

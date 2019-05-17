@@ -10,7 +10,7 @@ class Server
         entries = entries.select do |entry|
           entry[:status] === :unknown
         end.each do |entry|
-          entry_path = "#{ Server.fs_dir }/#{ dir_path }/#{ entry[:name] }"
+          entry_path = "#{ dir_path }/#{ entry[:name] }"
           remove_entry entry_path
         end
 

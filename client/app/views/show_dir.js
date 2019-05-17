@@ -1,6 +1,6 @@
 app.views.show_dir = ( r, data ) => (a,x) => [
 
-  a.h4( [
+  a.h3( [
     data.label,
     ' ',
     a.small( a.i( data.description ) ),

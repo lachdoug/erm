@@ -1,7 +1,7 @@
 app.views.edit_dir_order = ( r, data ) => (a,x) => {
 
   return [
-    a.h4( `Order ${ data.label }` ),
+    a.h3( `Order ${ data.label }` ),
     a.p( [
       app.btn(
         app.fa( "check", `Done` ),

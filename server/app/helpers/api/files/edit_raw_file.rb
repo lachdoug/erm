@@ -4,7 +4,7 @@ class Server
 
       def edit_raw_file( behavior, file_path, file_config )
 
-        entry_path = "#{ Server.fs_dir }/#{ file_path }"
+        entry_path = file_path
 
         entry = file_entry behavior, file_path, file_config
 

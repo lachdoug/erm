@@ -32,7 +32,7 @@ class Server
           name = dir_params[:name]
         end
 
-        raise ApiError.new( "Requires a name.", 422 ) unless name
+        raise Error.new( "Requires a name.", 422 ) unless name
 
         if dir_config[:labeled]
           label = name
@@ -40,7 +40,7 @@ class Server
         end
 
         dir_path = "#{ parent_path }/#{ name }"
-        entry_path = "#{ Server.fs_dir }/#{ dir_path }"
+        entry_path = dir_path
 
         make_directory entry_path
         apply_dir_permissions entry_path
@@ -86,7 +86,7 @@ class Server
 
       rescue Errno::EEXIST
 
-        raise ApiError.new( "#{ name } already exists.", 409 )
+        raise Error.new( "#{ name } already exists.", 409 )
 
       end
 

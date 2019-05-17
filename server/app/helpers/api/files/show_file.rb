@@ -46,14 +46,16 @@ class Server
               href: href
             }
           when :text, :markdown, :code
-            entry_path = "#{ Server.fs_dir }/#{ file_path }"
+            # entry_path = "#{ Server.fs_dir }/#{ file_path }"
+            entry_path = file_path
             file[:text] = read_file entry_path
           when :list
             serialize =
               file_config[:serialize] ||
               ( file_config[:ext] === "yaml" || file_config[:ext] === "yaml" ) ?
                 :yaml : :json
-            entry_path = "#{ Server.fs_dir }/#{ file_path }"
+            # entry_path = "#{ Server.fs_dir }/#{ file_path }"
+            entry_path = file_path
             file_contents = read_file entry_path
             case serialize.to_sym
             when :yaml
@@ -86,7 +88,7 @@ class Server
       rescue Errno::ENOENT
 
         name = file_path.match( /([^\/]+)$/ )
-        raise ApiError.new( "#{ name } does not exist.", 404 )
+        raise Error.new( "#{ name } does not exist.", 404 )
 
       end
 

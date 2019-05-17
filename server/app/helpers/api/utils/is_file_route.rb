@@ -4,7 +4,7 @@ class Server
 
       def is_file_route( path )
 
-        File.file? "#{ Server.fs_dir }/#{ path }"
+        File.file? path
 
       end
 

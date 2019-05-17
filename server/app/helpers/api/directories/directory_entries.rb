@@ -17,10 +17,11 @@ class Server
           list_options[:index_dirs] = true
         end
 
-        entries = list_directory( "#{ Server.fs_dir }/#{ dir_path }", list_options ) do |entry|
+        entries = list_directory( dir_path, list_options ) do |entry|
 
           entry_name = File.basename entry
-          path = entry.sub "#{ Server.fs_dir }/", ''
+          # path = entry.sub "#{ Server.fs_dir }/", ''
+          path = entry
           dir_data = parent_data[ entry_name ] || {}
 
           status = :present

@@ -7,7 +7,7 @@ class Server
         # dir_id = entry_id "#{ Server.fs_dir }/#{ dir_path }"
         name = File.basename dir_path
 
-        entry_path = "#{ Server.fs_dir }/#{ dir_path }"
+        entry_path = "/#{ dir_path }"
         apply_dir_permissions entry_path
 
         remove_entry entry_path
@@ -25,7 +25,7 @@ class Server
       rescue Errno::ENOENT
 
         name = dir_path.match( /([^\/]+)$/ )
-        raise ApiError.new( "#{ name } does not exist.", 404 )
+        raise Error.new( "#{ name } does not exist.", 404 )
 
       end
     end

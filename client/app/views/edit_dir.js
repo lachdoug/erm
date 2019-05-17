@@ -3,7 +3,7 @@ app.views.edit_dir = ( r, data ) => (a,x) => {
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( `Edit ${ data.label }` ),
+    a.h3( `Edit ${ data.label }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",

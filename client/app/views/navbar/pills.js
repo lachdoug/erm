@@ -1,7 +1,7 @@
 app.navbar.pills = (r) => (a,x) => {
 
-  let location = r.path
-  if ( location === '/~dir' ) location = '/'
+  let location = r.path.replace( /^\/volumes/, '')
+  // if ( location === '/~dir' ) location = '/'
   let path_match = location.match( /^((.*)\/~(dir|subdir|file))(.*)$/ )
 
   let base_path
@@ -33,33 +33,33 @@ app.navbar.pills = (r) => (a,x) => {
     let path = `${ scope }${ segment }`
     let component
 
+    // debugger
     if ( i === 0 && i === last_i ) {
-
-      if ( base_path === location ) {
-        component = a['.pill-selected']( app.fa( "home" ) )
-      } else {
-        component = app.btn( app.fa( 'home' ), ()=> r.open( `/` ) )
-      }
+// component = app.btn( app.fa( 'home' ), ()=> r.open( `/volumes/~dir` ) )
+  component = a['.pill-selected']( app.fa( "home" ) )
+      // if ( base_path === location ) {
+      // } else {
+      // }
     } else if ( i === 0 ) {
-      component = app.btn( app.fa( 'home' ), ()=> r.open( `/` ) )
+      component = app.btn( app.fa( 'home' ), ()=> r.open( `/volumes/~dir` ) )
     } else if ( i === last_i ) {
       let fa = entry_type === "dir" ? "folder" : "file-o"
       if ( action ) {
         component = app.btn(
           app.fa( fa, decodeURIComponent( segment ) ),
-          ()=> r.open( `${ path }/~${ entry_type }` )
+          ()=> r.open( `/volumes${ path }/~${ entry_type }` )
         )
-        up_path = `${ path }/~${ entry_type }`
+        up_path = `/volumes${ path }/~${ entry_type }`
       } else {
         component = a['.pill-selected']( app.fa(
           fa, decodeURIComponent( segment )
         ) )
-        up_path = `${ scope }~dir`
+        up_path = `/volumes${ scope }~dir`
       }
     } else {
       component = app.btn(
         app.fa( 'folder', decodeURIComponent( segment ) ),
-        ()=> r.open( `${ path }/~dir` )
+        ()=> r.open( `/volumes${ path }/~dir` )
       )
     }
 

@@ -1,5 +1,5 @@
 app.views.delete_dir = ( r, data ) => (a,x) => [
-  a.h4( `Delete ${ data.label }` ),
+  a.h3( `Delete ${ data.label }` ),
   a.p( [
     "Are you sure that you want to delete the directory ",
     a.strong( data.dirname ), " and all its contents?"

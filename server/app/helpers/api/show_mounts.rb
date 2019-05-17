@@ -11,7 +11,7 @@ class Server
           description = root_config[:description]
 
           {
-            path: "#{ name }/~dir",
+            path: "volumes/#{ name }/~dir",
             entry_type: :dir,
             status: :present,
             label: root_config[:label] || name,

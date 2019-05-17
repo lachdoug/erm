@@ -32,7 +32,7 @@ class Server
           new_name = dir_params[:name]
         end
 
-        raise ApiError.new( "Requires a name.", 422 ) unless new_name
+        raise Error.new( "Requires a name.", 422 ) unless new_name
 
         if dir_config[:labeled]
           label = new_name
@@ -40,11 +40,11 @@ class Server
         end
 
         new_dir_path = "#{ parent_path }/#{ new_name }"
-        new_entry_path = "#{ Server.fs_dir }/#{ new_dir_path }"
-        move_entry "#{ Server.fs_dir }/#{ dir_path }", new_entry_path
-
+        new_entry_path = new_dir_path
+        move_entry dir_path, new_entry_path
+# debugger
         dir_id = entry_id new_entry_path
-
+# debugger
         if dir_config[:description]
           description_template_params = {
             name: new_name,
@@ -62,7 +62,7 @@ class Server
             description_template_params
           )
         end
-
+# debugger
         parent_data = load_dir_data parent_path
         dir_data = parent_data[ name ] || {}
         dir_data[:metadata] = dir_params[:metadata].to_h
@@ -71,7 +71,7 @@ class Server
         parent_data.delete name
         parent_data[ new_name ] = dir_data
         save_dir_data parent_path, parent_data
-
+# debugger
         {
           view: :update_dir,
           path: "#{ new_dir_path }/~dir",
@@ -80,7 +80,7 @@ class Server
       rescue Errno::ENOENT
 
         name = dir_path.match( /([^\/]+)$/ )
-        raise ApiError.new( "#{ name } does not exist.", 404 )
+        raise Error.new( "#{ name } does not exist.", 404 )
 
       end
 

@@ -3,7 +3,7 @@ app.views.new_file = ( r, data ) => (a,x) => {
   let metadata = data.config.metadata || []
 
   return [
-    a.h4( `New ${ data.type }` ),
+    a.h3( `New ${ data.type }` ),
     x.appkit.form( (f) => [
       data.config.name ? f.fields( {
         key: "name",

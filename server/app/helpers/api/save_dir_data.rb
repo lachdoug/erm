@@ -9,7 +9,8 @@ class Server
         "# Do not delete or move\n" +
         metadata.to_yaml
 
-        entry_path = "#{ Server.fs_dir }/#{ path }/.erm.data"
+        # entry_path = "#{ Server.fs_dir }/#{ path }/.erm.data"
+        entry_path = "#{ path }/.erm.data"
 
         write_file( entry_path, contents )
 

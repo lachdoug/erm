@@ -4,7 +4,8 @@ class Server
 
       def update_raw_file( behavior, file_path, file_config, file_params )
 
-        entry_path = "#{ Server.fs_dir }/#{ file_path }"
+        # entry_path = "#{ Server.fs_dir }/#{ file_path }"
+        entry_path = file_path
 
         write_file entry_path, file_params[:contents]
 
@@ -16,7 +17,7 @@ class Server
       rescue Errno::ENOENT
 
         name = file_path.match( /([^\/]+)$/ )
-        raise ApiError.new( "#{ name } does not exist.", 404 )
+        raise Error.new( "#{ name } does not exist.", 404 )
 
       end
 

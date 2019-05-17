@@ -42,7 +42,7 @@ class Server
           new_name = file_params[:name]
         end
 
-        raise ApiError.new( "Requires a name.", 422 ) unless new_name
+        raise Error.new( "Requires a name.", 422 ) unless new_name
 
         if file_config[:labeled]
           label = new_name
@@ -56,8 +56,10 @@ class Server
         end
 
         new_file_path = "#{ parent_path }/#{ new_file_name }"
-        new_entry_path = "#{ Server.fs_dir }/#{ new_file_path }"
-        move_entry "#{ Server.fs_dir }/#{ file_path }", new_entry_path
+        # new_entry_path = "#{ Server.fs_dir }/#{ new_file_path }"
+        # move_entry "#{ Server.fs_dir }/#{ file_path }", new_entry_path
+        new_entry_path = new_file_path
+        move_entry file_path, new_entry_path
 
         if file_config[:content]
           content_template_params = {
@@ -120,7 +122,7 @@ class Server
       rescue Errno::ENOENT
 
         name = file_path.match( /([^\/]+)$/ )
-        raise ApiError.new( "#{ name } does not exist.", 404 )
+        raise Error.new( "#{ name } does not exist.", 404 )
 
       end
 

@@ -4,7 +4,8 @@ class Server
 
       def file_entry( behavior, file_path, file_config )
 
-        entry_path = "#{ Server.fs_dir }/#{ file_path }"
+        # entry_path = "#{ Server.fs_dir }/#{ file_path }"
+        entry_path = file_path
 
         dir_path = parent_path_for file_path
         dir_data = load_dir_data( dir_path ) || {}
