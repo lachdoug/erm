@@ -3,8 +3,8 @@ class Server < Sinatra::Base
   def authenticate!
     raise Error.new( "Not signed in.", 401 ) unless signed_in
     if timed_out
-      session[:user_auth_at] = null
-      session[:user_token] = null
+      session.delete( :user_auth_at )
+      session.delete( :user_token )
       raise Error.new( "Signed out due to inactivity.", 401 )
     else
       session[:user_auth_at] = Time.now
