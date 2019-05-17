@@ -290,7 +290,10 @@ app.views.resolver = (r) => ( request ) => ( el, dataPromise ) => [
       (a,x) => x.appkit.put( err.message ),
       request.status === 401 ? app.btn(
         app.fa( "sign-in", "Sign in" ),
-        () => r.open( `/sign_in` )
+        () => {
+          app.views.sign_in.redirect = r.path
+          r.open( `/sign_in` )
+        }
       ) : null
     ]
   } )
