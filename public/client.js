@@ -526,6 +526,17 @@ app.views.sign_in = (r) => (a,x) => a["app-sign-in"]( [
   a.h3( "Authentication" ),
 
   x.appkit.form( (f) => [
+    a.input( {
+      name: "username",
+      value: "ERM User Token",
+      style: {
+        height: 0,
+        margin: 0,
+        padding: 0,
+        border: 0,
+        display: "block",
+      },
+    } ),
     f.fields( {
       key: "token",
       type: "password",
