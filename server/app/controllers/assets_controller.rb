@@ -4,7 +4,7 @@ class Server
 
       get '/assets/client.js' do
         content_type :'application/javascript'
-        @distribution = App::Models::Distribution.new
+        @distribution = App::Services::Distribution.new
         @distribution.client
       end
 
