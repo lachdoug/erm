@@ -18,6 +18,9 @@ class Server
 
           case as.to_sym
           when :link
+
+            path = file_path.sub( /^[^\/]+\//, '' )
+
             link_config = file_config[:link] || {}
 
             if file[:created]
@@ -31,8 +34,8 @@ class Server
               name: file[:name],
               filename: file[:filename],
               ext: file[:ext],
-              path: file_path,
-              fs_path: file_path.sub( /^[^\/]+\//, '' ),
+              path: path,
+              fs_path: path.sub( /^[^\/]+\//, '' ),
               inode: file[:file_id],
               index: file[:index],
               created: created,
@@ -45,6 +48,7 @@ class Server
               label: link_config[:label],
               href: href
             }
+
           when :text, :markdown, :code
             # entry_path = "#{ Server.fs_dir }/#{ file_path }"
             entry_path = file_path
