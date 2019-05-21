@@ -37,11 +37,6 @@ app.views.show_file = ( r, data ) => (a,x) => [
       "link float-right",
     ) : null,
 
-    a.hr,
-
-    x.appkit.put( data ),
-
-
   ], { class: "clearfix" } ),
 
   data.error ? [
