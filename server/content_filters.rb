@@ -1,7 +1,7 @@
 class Server < Sinatra::Base
 
   before do
-    if request.path_info.match /^\/api\/?|^\/iframe\/?/
+    if request.path_info.match /^\/api\/?|^\/iframe\/?|^\/download\/?/
       authenticate! unless request.path_info === "/api/session"
     end
     # Default content type to JSON

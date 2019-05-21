@@ -23,6 +23,14 @@ app.views.show_file = ( r, data ) => (a,x) => [
       () => r.open( `${ r.path }/raw/edit` )
     ) : null,
 
+    data.download ? a.a(
+      app.fa( "download", `Download` ),
+      {
+        href: `/download${ r.path.replace( /\/~.*/, '' ) }`,
+        class: "btn btn-link"
+      }
+    ) : null,
+
     data.item && data.item.delete ? app.btn(
       app.fa( "trash", `Delete ${ data.type }` ),
       () => r.open( `${ r.path }/delete` ),
@@ -38,12 +46,12 @@ app.views.show_file = ( r, data ) => (a,x) => [
   ] : app.views.show_file.as( r, data ),
 
   a["p.text-center"]( a.small( [
-    data.created ?
+    data.item && data.item.new ? data.created ?
       [
         "Created",
         x.timeago( data.created )
       ] :
-      [ "Creation date unknown" ],
+      [ "Creation date unknown" ] : null,
     [ "Modified", x.timeago( data.modified ) ],
   ] ) ),
 

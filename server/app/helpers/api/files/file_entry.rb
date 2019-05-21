@@ -39,6 +39,7 @@ class Server
           index: file_data[:index],
           created: file_data[:created],
           modified: modified,
+          download: ( file_config[:download] != false ),
           raw: ( file_config[:raw] != false ),
           editor: ( file_config[:editor] != false ),
         }
@@ -56,6 +57,7 @@ class Server
           file[:item] = {
             edit: editable,
             delete: ( file_config[:delete] != false ),
+            new: ( file_config[:new] != false ),
           }
           file[:created] = file_data[:created]
         end
