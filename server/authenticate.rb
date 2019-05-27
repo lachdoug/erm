@@ -1,5 +1,12 @@
 class Server < Sinatra::Base
 
+  before do
+    if request.path_info.match /^\/api\/?|^\/iframe\/?|^\/download\/?/
+      authenticate! unless request.path_info === "/api/session" &&
+                            request.request_method === "POST"
+    end
+  end
+
   def authenticate!
     raise Error.new( "Not signed in.", 401 ) unless signed_in
     if timed_out

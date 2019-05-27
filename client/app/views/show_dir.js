@@ -16,7 +16,7 @@ app.views.show_dir = ( r, data ) => (a,x) => [
 
     data.order ?
       app.btn(
-        app.fa( "sort", `Order ${ data.label }` ),
+        app.fa( "sort", `Order ${ data.type }` ),
         () => r.open( `${ r.path }/order/edit` )
       ) : null,
 
