@@ -12,7 +12,7 @@ class Server
             dir_path = "#{ dir }/#{ name }"
             entry_path = dir_path
             touch_directory entry_path
-            # apply_dir_permissions entry_path
+            apply_dir_permissions entry_path
             build_dirs_entries "#{ dir_path }/", subdir_config
           end
         end

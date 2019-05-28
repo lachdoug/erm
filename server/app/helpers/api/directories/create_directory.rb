@@ -43,7 +43,7 @@ class Server
         entry_path = dir_path
 
         make_directory entry_path
-        # apply_dir_permissions entry_path
+        apply_dir_permissions entry_path
         build_dirs_entries dir_path, dir_config
 
         dir_id = entry_id entry_path

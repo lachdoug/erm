@@ -8,8 +8,7 @@ class Server
         name = File.basename dir_path
 
         # entry_path = "/#{ dir_path }"
-        # apply_dir_permissions entry_path
-        # debugger
+        apply_dir_permissions dir_path
 
         remove_entry dir_path
 
