@@ -4,7 +4,7 @@ class Server
 
       def remove_entry( entry )
 
-        FileUtils.rm_r entry
+        FileUtils.rm_rf entry
 
       end
 
